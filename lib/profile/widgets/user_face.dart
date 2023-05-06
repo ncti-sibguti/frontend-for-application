@@ -4,43 +4,18 @@ import 'package:flutter/material.dart';
 Widget userFace(
     BuildContext context, String lastName, firstName, surname, email) {
   return Container(
-    padding: EdgeInsets.symmetric(vertical: 20),
-    width: 400,
-    height: 240,
-    child: Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Image.network(
-              'https://picsum.photos/seed/198/600',
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Text('Not Found'),
-            ),
-          ],
+      padding: EdgeInsets.symmetric(vertical: 20),
+      width: 400,
+      height: 240,
+      child: Column(children: [
+        CircleAvatar(
+          radius: 50,
+          backgroundImage: AssetImage('assets/images/person_icon.png'),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
-        Align(
-            child: Container(
-          margin: EdgeInsets.only(left: 40),
-          child: SizedBox(
-            width: 250,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text(lastName),
-                Text(firstName),
-                Text(surname),
-                Text(email),
-              ],
-            ),
-          ),
-        )),
-      ],
-    ),
-  );
+        SizedBox(
+          height: 40,
+        ),
+        Text('$lastName $firstName $surname')
+      ]));
 }

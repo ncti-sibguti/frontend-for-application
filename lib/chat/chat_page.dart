@@ -11,16 +11,7 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(
-        child: Column(children: [
-          TextButton(
-            onPressed: () {
-              AutoRouter.of(context).push(const HomeRoute());
-            },
-            child: Text(style: Theme.of(context).textTheme.bodyMedium, 'Home'),
-          ),
-        ]),
-      ),
+      child: Center(child: Text('Ожидайте в следующих обновлениях')),
     );
   }
 }

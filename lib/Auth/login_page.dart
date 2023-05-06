@@ -66,9 +66,8 @@ class _LoginPageState extends State<LoginPage> {
                   if (await LoginRepositories()
                       .login(_usernameController, _passwordController)) {
                     if (context.mounted) {
-                      AutoRouter.of(context).push(
-                        const HomeRoute(),
-                      );
+                      AutoRouter.of(context).pushAndPopUntil(const HomeRoute(),
+                          predicate: (route) => route.settings.name == '/home');
                     }
                   } else {
                     if (context.mounted) {

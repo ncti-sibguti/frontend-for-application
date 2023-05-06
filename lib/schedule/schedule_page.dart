@@ -61,7 +61,8 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
-  static List<String> daysOfWeek = [
+  static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+  static List<String> lessonsOfWeek = [
     "Понедельник",
     "Вторник",
     "Среда",
@@ -70,7 +71,7 @@ class _SchedulePageState extends State<SchedulePage> {
     "Суббота"
   ];
 
-  String selectedDay = daysOfWeek[0];
+  String selectedDay = lessonsOfWeek[0];
 
   @override
   Widget build(BuildContext context) {
@@ -141,9 +142,10 @@ class _SchedulePageState extends State<SchedulePage> {
               SizedBox(
                 height: 15.0,
               ),
-              const Card(
+              Card(
                   child: ListTile(
-                title: Text('Пар нет'),
+                title: Text('Пары отсутствуют',
+                    style: Theme.of(context).textTheme.labelLarge),
               )),
             ],
           ),
@@ -154,7 +156,13 @@ class _SchedulePageState extends State<SchedulePage> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               children: [
+                SizedBox(
+                  height: 15.0,
+                ),
                 _buildDaysButtons(),
+                SizedBox(
+                  height: 15.0,
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: lessons.length,
@@ -181,23 +189,26 @@ class _SchedulePageState extends State<SchedulePage> {
     }
 
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
       height: 40,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: daysOfWeek.length,
+          itemCount: lessonsOfWeek.length,
           itemBuilder: (BuildContext context, int index) {
             return TextButton(
-              onPressed: () => onDaySelected(daysOfWeek[index]),
+              onPressed: () => onDaySelected(lessonsOfWeek[index]),
               child: Text(daysOfWeek[index]),
               style: ButtonStyle(
-                backgroundColor: selectedDay == daysOfWeek[index]
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 15)),
+                backgroundColor: selectedDay == lessonsOfWeek[index]
                     ? MaterialStateProperty.all<Color>(
-                        const Color.fromRGBO(7, 52, 169, 1))
-                    : null,
-                foregroundColor: selectedDay == daysOfWeek[index]
+                        const Color.fromRGBO(65, 45, 166, 1))
+                    : MaterialStateProperty.all<Color>(
+                        const Color.fromRGBO(241, 246, 252, 1)),
+                foregroundColor: selectedDay == lessonsOfWeek[index]
                     ? MaterialStateProperty.all<Color>(Colors.white)
-                    : MaterialStateProperty.all<Color>(Colors.black),
+                    : MaterialStateProperty.all<Color>(
+                        Color.fromRGBO(114, 108, 202, 1)),
               ),
             );
 

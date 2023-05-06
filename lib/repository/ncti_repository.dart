@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:auto_route/auto_route.dart';
+
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:ncti/schedule/models/day_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../routes/router.dart';
 
 const String SERVER = 'http://25.28.126.117:8080/api';
 
@@ -60,7 +58,7 @@ class LoginRepositories {
 }
 
 // access eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLQktC40YLQsNC70LjQudCQ0L3QtNGA0LXQtdCy0LjRhyIsInJvbGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfU1RVREVOVCJ9XSwidXNlcl9pZCI6OSwiaXNzIjoibmN0aS1iYWNrZW5kIiwiZXhwIjoxNjgzMTMxNDM5LCJpYXQiOjE2ODI1MjY2Mzl9.5JRwZOk4XXe1JJTbXrHEvh-FuLZrHiEaExdD4YRpZPu2SmxUEodq9AzcI1Y2z44FBjv0EYKK-XB152Bko-SbXA
-// // refresh eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLQktC40YLQsNC70LjQudCQ0L3QtNGA0LXQtdCy0LjRhyIsImlzcyI6Im5jdGktYmFja2VuZCIsImV4cCI6MTY4MzczNjIzOSwiaWF0IjoxNjgyNTI2NjM5fQ.HDjCn0Z3r8MaV3bAYQbgubfjamDr9aSno0v_v8Hk1jLLiCqEGjswREaBkbe1ixvmIOdS4AXhMaP3KI9g7PMUJw
+// refresh eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLQktC40YLQsNC70LjQudCQ0L3QtNGA0LXQtdCy0LjRhyIsImlzcyI6Im5jdGktYmFja2VuZCIsImV4cCI6MTY4MzczNjIzOSwiaWF0IjoxNjgyNTI2NjM5fQ.HDjCn0Z3r8MaV3bAYQbgubfjamDr9aSno0v_v8Hk1jLLiCqEGjswREaBkbe1ixvmIOdS4AXhMaP3KI9g7PMUJw
 class AuthorizationRepositories {
   Future<bool> isLogin() async {
     final prefs = await SharedPreferences.getInstance();
@@ -81,8 +79,8 @@ class GetToken {
     prefs.remove('refreshToken');
     prefs.remove('accessToken');
 
-    debugPrint(prefs.getString('accessToken'));
-    debugPrint(prefs.getString('refreshToken'));
+    // debugPrint(prefs.getString('accessToken'));
+    // debugPrint(prefs.getString('refreshToken'));
   }
 
   Future<String?> getAccessToken() async {
@@ -91,7 +89,7 @@ class GetToken {
       String? accessToken = prefs.getString('accessToken');
       if (accessToken != null) return accessToken;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('GetAccessToken${e.toString()}');
 
       rethrow;
     }
@@ -103,7 +101,7 @@ class GetToken {
       String? refreshToken = prefs.getString('refreshToken');
       if (refreshToken != null) return refreshToken;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('GetRefreshToken${e.toString()}');
       rethrow;
     }
   }
@@ -149,7 +147,6 @@ class GetScheduleRepositories {
 
       final responseBody = utf8.decode(response.bodyBytes);
       final jsonData = deserializeLessons(responseBody);
-      debugPrint(jsonData.toString());
 
       return jsonData;
     } else
@@ -172,14 +169,14 @@ class GetScheduleRepositories {
 
       return jsonData;
     } else
-      throw Exception('Failed to load student schedule');
+      throw Exception('Failed to teacher student schedule');
   }
 }
 
 class GetUser {
-  Future getUser() async {
+  Future<String> getStudent() async {
     String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/api/";
+    String url = "$SERVER/student/profile";
     final response = await http.get(Uri.parse(url), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken'
@@ -191,6 +188,24 @@ class GetUser {
 
       return responseBody;
     } else
-      throw Exception('Failed to load user');
+      throw Exception('Failed to load student');
+  }
+
+  Future<String> getTeacher() async {
+    String? accessToken = await GetToken().getAccessToken();
+    String url = "$SERVER/teacher/profile";
+    final response = await http.get(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    });
+    if (response.statusCode == 200) {
+      debugPrint('Teacher получено');
+      final responseBody = utf8.decode(response.bodyBytes);
+
+      // debugPrint(responseBody);
+
+      return responseBody;
+    } else
+      throw Exception('Failed to load teacher');
   }
 }
