@@ -3,7 +3,7 @@ import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/schedule/schedule_page.dart';
 import 'package:ncti/profile/user_page.dart';
 import 'package:flutter/material.dart';
-import 'package:ncti/loading_screen.dart';
+
 import 'package:ncti/Auth/login_page.dart';
 
 import 'package:ncti/home_screen.dart';
@@ -38,6 +38,5 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         // AutoRoute(page: UserRoute.page),
         // AutoRoute(page: ChatRoute.page),
         AutoRoute(page: LoginRoute.page),
-        AutoRoute(page: LoadingRoute.page)
       ];
 }

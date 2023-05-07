@@ -21,6 +21,9 @@ dependencies:
   auto_route_generator: ^6.2.0
   build_runner: ^2.3.3
   json_annotation: ^4.8.0
+  vector_graphics: ^1.1.5+1
+  flutter_svg: ^2.0.5
+  flutter_launcher_icons: ^0.13.1
   # flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
@@ -73,10 +76,11 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
-# flutter_icons:
-#   android: true
-#   ios: true
-#   image_path: "assets/images/icon.png"
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/test.png"
 #   adaptive_icon_background: "#FFFFFF"
 #   adaptive_icon_foreground: ""
 #   adaptive_icon_maskable: true
