@@ -44,14 +44,14 @@ class Role {
   }
 }
 
-class Lesson {
+class StudentLesson {
   String day;
   int numberPair;
   Teacher teacher;
   String subject;
   String classroom;
 
-  Lesson({
+  StudentLesson({
     required this.day,
     required this.numberPair,
     required this.teacher,
@@ -59,8 +59,8 @@ class Lesson {
     required this.classroom,
   });
 
-  factory Lesson.fromJson(Map<String, dynamic> json) {
-    return Lesson(
+  factory StudentLesson.fromJson(Map<String, dynamic> json) {
+    return StudentLesson(
       day: json['day'],
       numberPair: json['numberPair'],
       teacher: Teacher.fromJson(json['teacher']),
@@ -70,18 +70,18 @@ class Lesson {
   }
 }
 
-Map<String, List<Lesson>> deserializeLessons(String jsonString) {
+Map<String, List<StudentLesson>> deserializeStudentLessons(String jsonString) {
   final Map<String, dynamic> jsonMap = json.decode(jsonString);
 
-  final Map<String, List<Lesson>> lessons = {};
+  final Map<String, List<StudentLesson>> lessons = {};
 
   for (final key in jsonMap.keys) {
     final List<dynamic> lessonList = jsonMap[key];
 
-    final List<Lesson> lessonsForDay = [];
+    final List<StudentLesson> lessonsForDay = [];
 
     for (final lesson in lessonList) {
-      lessonsForDay.add(Lesson.fromJson(lesson));
+      lessonsForDay.add(StudentLesson.fromJson(lesson));
     }
 
     lessons[key] = lessonsForDay;

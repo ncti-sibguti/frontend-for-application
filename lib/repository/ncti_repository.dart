@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:ncti/schedule/models/day_model.dart';
+import 'package:ncti/schedule/models/student_schedule.dart';
+import 'package:ncti/schedule/models/teacher_schedule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//192.168.1.122
 const String SERVER = 'http://25.28.126.117:8080/api';
 
 class LoginRepositories {
@@ -51,7 +53,7 @@ class LoginRepositories {
       return true;
       // возвращает true || false
     } else {
-      debugPrint('response no');
+      // debugPrint('response no');
       return false;
     }
   }
@@ -63,7 +65,7 @@ class AuthorizationRepositories {
   Future<bool> isLogin() async {
     final prefs = await SharedPreferences.getInstance();
     String? refreshToken = prefs.getString('refreshToken');
-    debugPrint('isLogin get access $refreshToken');
+    // debugPrint('isLogin get access $refreshToken');
 
     if (refreshToken != null) {
       return true;
@@ -93,6 +95,7 @@ class GetToken {
 
       rethrow;
     }
+    return null;
   }
 
   Future<String?> getRefreshToken() async {
@@ -104,6 +107,21 @@ class GetToken {
       debugPrint('GetRefreshToken${e.toString()}');
       rethrow;
     }
+    return null;
+  }
+}
+
+class EnabledTheme {
+  Future<bool> getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.getBool('isDark') ?? false;
+  }
+
+  Future<void> setTheme(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    debugPrint('Записана $value');
+    await prefs.setBool('isDark', value);
   }
 }
 
@@ -116,7 +134,7 @@ class UpdateToken {
       'Authorization': 'Bearer $refreshToken'
     });
     if (response.statusCode == 200) {
-      debugPrint('response yes');
+      // debugPrint('response yes');
 
       final decodedToken = jsonDecode(response.body);
 
@@ -143,14 +161,15 @@ class GetScheduleRepositories {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      debugPrint('Расписание получено');
+      // debugPrint('Расписание получено');
 
       final responseBody = utf8.decode(response.bodyBytes);
-      final jsonData = deserializeLessons(responseBody);
+      final jsonData = deserializeStudentLessons(responseBody);
 
       return jsonData;
-    } else
+    } else {
       throw Exception('Failed to load student schedule');
+    }
   }
 
   Future getTeacherShedule() async {
@@ -162,14 +181,14 @@ class GetScheduleRepositories {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      debugPrint('Расписание получено');
+      // debugPrint('Расписание получено');
 
       final responseBody = utf8.decode(response.bodyBytes);
-      final jsonData = deserializeLessons(responseBody);
-
+      final jsonData = deserializeTeacherLessons(responseBody);
       return jsonData;
-    } else
+    } else {
       throw Exception('Failed to teacher student schedule');
+    }
   }
 }
 
@@ -187,8 +206,9 @@ class GetUser {
       final responseBody = utf8.decode(response.bodyBytes);
 
       return responseBody;
-    } else
+    } else {
       throw Exception('Failed to load student');
+    }
   }
 
   Future<String> getTeacher() async {
@@ -205,7 +225,8 @@ class GetUser {
       // debugPrint(responseBody);
 
       return responseBody;
-    } else
+    } else {
       throw Exception('Failed to load teacher');
+    }
   }
 }

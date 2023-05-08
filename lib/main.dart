@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:ncti/routes/router.dart';
-import 'package:ncti/theme.dart';
+import 'package:ncti/theme_changer.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final themeModel = ThemeModel();
+  await themeModel.loadTheme();
+
+  runApp(ChangeNotifierProvider.value(
+    value: themeModel,
+    child: const MyApp(),
+  ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final _appRouter = AppRouter();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _appRouter.config(
-          // navigatorObservers: () => {
-          //   TalkerRouteObserver(GetIt.I<Talker>)
-          // }
-          ),
-      debugShowCheckedModeBanner: false,
-      title: 'NCTI App',
-      theme: light,
-      darkTheme: dark,
+    final appRouter = AppRouter();
+    return Consumer<ThemeModel>(
+      builder: (context, model, child) {
+        return MaterialApp.router(
+          routerConfig: appRouter.config(),
+          debugShowCheckedModeBanner: false,
+          title: 'NCTI App',
+          theme: model.currentTheme,
+          // themeMode: ThemeMode.system,
+        );
+      },
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:ncti/chat/chat_page.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/schedule/schedule_page.dart';
 import 'package:ncti/profile/user_page.dart';
-import 'package:flutter/material.dart';
 
 import 'package:ncti/Auth/login_page.dart';
 
@@ -17,11 +16,11 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
     if (await AuthorizationRepositories().isLogin() ||
         resolver.route.name == LoginRoute.name) {
-      debugPrint('AuthGuard True');
+      // debugPrint('AuthGuard True');
       // we continue navigation
       resolver.next();
     } else {
-      debugPrint('AuthGuard False');
+      // debugPrint('AuthGuard False');
       // else we navigate to the Login page so we get authenticateed
       push(const LoginRoute());
     }

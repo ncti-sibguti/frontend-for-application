@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ncti/schedule/models/day_model.dart';
 
-class LessonWidget extends StatelessWidget {
-  final Lesson lesson;
+import '../models/student_schedule.dart';
 
-  LessonWidget({required this.lesson});
+class StudentLessonWidget extends StatelessWidget {
+  final StudentLesson lesson;
+
+  const StudentLessonWidget({super.key, required this.lesson});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class LessonWidget extends StatelessWidget {
       color: Theme.of(context).cardColor,
       child: Row(
         children: [
-          Container(
+          SizedBox(
             // padding: EdgeInsets.all(10),
             width: 40,
             child: Center(
@@ -24,7 +25,7 @@ class LessonWidget extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 10),
               child: ListTile(
                 title: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),

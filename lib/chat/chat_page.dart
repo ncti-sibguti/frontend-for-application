@@ -1,17 +1,27 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../routes/router.dart';
+import 'package:ncti/repository/ncti_repository.dart';
 
 @RoutePage()
 class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
 
+  void removeToken() {
+    GetToken().removeToken();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(child: Text('Ожидайте в следующих обновлениях')),
-    );
+    return Center(
+        child: TextButton(
+      onPressed: () {
+        if (Theme.of(context).brightness == Brightness.dark) {
+          return debugPrint('темная');
+        } else {
+          return debugPrint('светлая');
+        }
+      },
+      child: const Text('gjfjg'),
+    ));
   }
 }

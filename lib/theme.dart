@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 
-ThemeData light = ThemeData(
+class AppTheme {
+  static final ThemeData light = ThemeData.light().copyWith(
+    colorScheme: const ColorScheme.light(
+      primary: Color.fromRGBO(241, 246, 252, 1),
+      secondary: Color.fromRGBO(7, 52, 169, 1),
+    ),
     cardColor: const Color.fromRGBO(83, 80, 213, 1),
     scaffoldBackgroundColor: const Color.fromRGBO(241, 246, 252, 1),
     primaryColor: const Color.fromRGBO(65, 45, 166, 1),
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
         bodyMedium: TextStyle(color: Color.fromRGBO(7, 52, 169, 1)),
         labelLarge: TextStyle(color: Color.fromRGBO(241, 246, 252, 1)),
         labelMedium: TextStyle(color: Color.fromRGBO(201, 214, 223, 1)),
         titleLarge: TextStyle(color: Color.fromRGBO(65, 45, 166, 1)),
-        displayLarge: TextStyle(color: Color.fromRGBO(241, 246, 252, 1))));
+        displayLarge: TextStyle(color: Color.fromRGBO(241, 246, 252, 1))),
+  );
 
-ThemeData dark = ThemeData(
-  scaffoldBackgroundColor: const Color.fromRGBO(3, 33, 36, 1),
-  primaryColor: const Color.fromRGBO(65, 45, 166, 1),
-);
+  static final ThemeData dark = ThemeData.dark().copyWith(
+      colorScheme: const ColorScheme.dark(
+        primary: Color.fromRGBO(30, 30, 30, 1),
+        secondary: Color.fromRGBO(72, 137, 234, 1),
+      ),
+      scaffoldBackgroundColor: const Color.fromARGB(100, 18, 18, 1),
+      primaryColor: const Color.fromRGBO(31, 31, 31, 1),
+      cardColor: const Color.fromRGBO(31, 31, 31, 1),
+      hintColor: const Color.fromRGBO(72, 137, 234, 1));
+}
+
+
 
 // button active rgb(65,45,166)
 // button passive rgb(241,246,252)

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/routes/router.dart';
+import 'package:ncti/theme_changer.dart';
+import 'package:provider/provider.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 @RoutePage()
@@ -69,6 +71,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeModel>(context);
+
     if (isLoading) {
       getUser();
       return AutoTabsScaffold(
@@ -94,8 +98,8 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(Icons.message_outlined),
                   title: const Text('Чат')),
               SalomonBottomBarItem(
-                  icon: const Icon(Icons.person_outline),
-                  title: const Text('Личный кабинет'))
+                  icon: const Icon(Icons.map_outlined),
+                  title: const Text('Карта'))
             ]),
       );
     } else {
@@ -112,17 +116,17 @@ class _HomePageState extends State<HomePage> {
             children: [
               DrawerHeader(
                 decoration:
-                    BoxDecoration(color: Color.fromRGBO(65, 45, 166, 1)),
+                    BoxDecoration(color: Theme.of(context).primaryColor),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 35,
                       child: Icon(Icons.person_outline_outlined),
                       // backgroundImage:
                       //     AssetImage('assets/images/person_icon.png'),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       '${dataUser['lastname']} ${dataUser['firstname']}',
                       style: Theme.of(context).textTheme.labelLarge,
@@ -132,15 +136,18 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              // ListTile(
-              //   title: const Text('Item 1'),
-              //   onTap: () {
-              //     // Update the state of the app.
-              //     // ...
-              //   },
-              // ),
               ListTile(
-                leading: Icon(Icons.door_back_door_outlined),
+                leading: Icon(Theme.of(context).brightness == Brightness.dark
+                    ? Icons.wb_sunny_outlined
+                    : Icons.nights_stay_outlined),
+                title: Text('Сменить тему',
+                    style: Theme.of(context).textTheme.bodyMedium),
+                onTap: () {
+                  themeProvider.toggleTheme();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.door_back_door_outlined),
                 title: Text('Выйти',
                     style: Theme.of(context).textTheme.bodyMedium),
                 onTap: () {
@@ -155,6 +162,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         bottomNavigationBuilder: (_, tabsRouter) => SalomonBottomBar(
+            unselectedItemColor: Theme.of(context).hintColor,
+            selectedItemColor: Theme.of(context).hintColor,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             margin: const EdgeInsets.symmetric(
               horizontal: 20,
