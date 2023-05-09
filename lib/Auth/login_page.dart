@@ -10,6 +10,7 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -67,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                style: const TextStyle(
-                  color: Colors.black,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: 18,
                 ),
                 validator: (value) {
@@ -105,8 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                style: const TextStyle(
-                  color: Colors.black,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: 18,
                 ),
                 obscureText: true,
@@ -157,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 child: const Text(
-                  'Логин',
+                  'Войти',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

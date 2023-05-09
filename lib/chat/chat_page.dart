@@ -12,16 +12,8 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: TextButton(
-      onPressed: () {
-        if (Theme.of(context).brightness == Brightness.dark) {
-          return debugPrint('темная');
-        } else {
-          return debugPrint('светлая');
-        }
-      },
-      child: const Text('gjfjg'),
-    ));
+    return const Center(
+      child: Text('В разработке'),
+    );
   }
 }

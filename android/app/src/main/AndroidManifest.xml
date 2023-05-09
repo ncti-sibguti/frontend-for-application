@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-sdk  android:minSdkVersion="7"/>
+
    <application
         android:label="КТИ"
         android:name="${applicationName}"

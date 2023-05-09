@@ -1,7 +1,7 @@
 import 'package:ncti/chat/chat_page.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/schedule/schedule_page.dart';
-import 'package:ncti/profile/user_page.dart';
+import 'package:ncti/maps/user_page.dart';
 
 import 'package:ncti/Auth/login_page.dart';
 

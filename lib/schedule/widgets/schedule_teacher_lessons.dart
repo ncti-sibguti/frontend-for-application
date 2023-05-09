@@ -8,6 +8,12 @@ class TeacherDayWidget extends StatefulWidget {
 
   // final TeacherLesson lesson;
   final dynamic dataJson;
+
+  @override
+  State<TeacherDayWidget> createState() => _TeacherDayWidgetState();
+}
+
+class _TeacherDayWidgetState extends State<TeacherDayWidget> {
   static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
   static List<String> lessonsOfWeek = [
     "Понедельник",
@@ -18,12 +24,8 @@ class TeacherDayWidget extends StatefulWidget {
     "Суббота"
   ];
 
-  @override
-  State<TeacherDayWidget> createState() => _TeacherDayWidgetState();
-}
+  String selectedDay = lessonsOfWeek[0];
 
-class _TeacherDayWidgetState extends State<TeacherDayWidget> {
-  String selectedDay = TeacherDayWidget.lessonsOfWeek[0];
   List<TeacherLesson> getLessonsForDay(String day) {
     switch (day) {
       case 'Понедельник':
@@ -67,7 +69,7 @@ class _TeacherDayWidgetState extends State<TeacherDayWidget> {
     }
   }
 
-  Widget _buildDaysButtons(BuildContext context) {
+  Widget _buildDaysButtons() {
     void onDaySelected(String day) {
       setState(() {
         selectedDay = day;
@@ -78,28 +80,23 @@ class _TeacherDayWidgetState extends State<TeacherDayWidget> {
       height: 40,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: TeacherDayWidget.lessonsOfWeek.length,
+          itemCount: lessonsOfWeek.length,
           itemBuilder: (context, int index) {
             return TextButton(
-              onPressed: () =>
-                  onDaySelected(TeacherDayWidget.lessonsOfWeek[index]),
+              onPressed: () => onDaySelected(lessonsOfWeek[index]),
               style: ButtonStyle(
-                //   padding: MaterialStateProperty.all<EdgeInsets>(
-                //       const EdgeInsets.symmetric(horizontal: 15)),
-                backgroundColor:
-                    selectedDay == TeacherDayWidget.lessonsOfWeek[index]
-                        ? MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.secondary)
-                        : MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.primary),
-                foregroundColor:
-                    selectedDay == TeacherDayWidget.lessonsOfWeek[index]
-                        ? MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.primary)
-                        : MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.secondary),
+                backgroundColor: MaterialStateColor.resolveWith((states) {
+                  return selectedDay == lessonsOfWeek[index]
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.primary;
+                }),
+                foregroundColor: MaterialStateColor.resolveWith((states) {
+                  return selectedDay == lessonsOfWeek[index]
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.secondary;
+                }),
               ),
-              child: Text(TeacherDayWidget.daysOfWeek[index]),
+              child: Text(daysOfWeek[index]),
             );
           }),
     );
@@ -109,28 +106,7 @@ class _TeacherDayWidgetState extends State<TeacherDayWidget> {
   Widget build(BuildContext context) {
     List<TeacherLesson> lessons = getLessonsForDay(selectedDay);
 
-    if (lessons.isEmpty) {
-      return Scaffold(
-          body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 15.0,
-            ),
-            _buildDaysButtons(context),
-            const SizedBox(
-              height: 15.0,
-            ),
-            Card(
-                child: ListTile(
-              title: Text('Пары отсутствуют',
-                  style: Theme.of(context).textTheme.labelLarge),
-            )),
-          ],
-        ),
-      ));
-    } else {
+    if (lessons.isNotEmpty) {
       return Scaffold(
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -139,7 +115,7 @@ class _TeacherDayWidgetState extends State<TeacherDayWidget> {
               const SizedBox(
                 height: 15.0,
               ),
-              _buildDaysButtons(context),
+              _buildDaysButtons(),
               const SizedBox(
                 height: 15.0,
               ),
@@ -155,6 +131,27 @@ class _TeacherDayWidgetState extends State<TeacherDayWidget> {
           ),
         ),
       );
+    } else {
+      return Scaffold(
+          body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 15.0,
+            ),
+            _buildDaysButtons(),
+            const SizedBox(
+              height: 15.0,
+            ),
+            Card(
+                child: ListTile(
+              title: Text('Пары отсутствуют',
+                  style: Theme.of(context).textTheme.labelLarge),
+            )),
+          ],
+        ),
+      ));
     }
   }
 }

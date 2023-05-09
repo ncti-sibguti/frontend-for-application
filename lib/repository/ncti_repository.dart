@@ -11,13 +11,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String SERVER = 'http://25.28.126.117:8080/api';
 
 class LoginRepositories {
-  Future<bool> login(TextEditingController _usernameController,
-      TextEditingController _passwordController) async {
-    final username = _usernameController.text;
-    final password = _passwordController.text;
-
-    // debugPrint('login $username');
-    // debugPrint('pas $password');
+  Future<bool> login(TextEditingController usernameController,
+      TextEditingController passwordController) async {
+    final username = usernameController.text;
+    final password = passwordController.text;
 
     final url = Uri.parse('$SERVER/auth/login');
     final response = await http.post(
@@ -28,13 +25,10 @@ class LoginRepositories {
         'Accept': 'application/json',
       },
     );
-    _usernameController.clear();
-    _passwordController.clear();
+    usernameController.clear();
+    passwordController.clear();
 
-    //response.statusCode == 200
     if (response.statusCode == 200) {
-      // debugPrint('response yes');
-
       final decodedToken = jsonDecode(response.body);
 
       String accessToken = decodedToken['accessToken'];
@@ -45,31 +39,23 @@ class LoginRepositories {
       await prefs.setString('accessToken', accessToken);
       await prefs.setString('refreshToken', refreshToken);
 
-      // String? getAccessToken = prefs.getString('accessToken');
-      // String? getRefreshToken = prefs.getString('refreshToken');
-
-      // debugPrint('access $getAccessToken');
-      // debugPrint('refresh $getRefreshToken');
       return true;
-      // возвращает true || false
     } else {
-      // debugPrint('response no');
+      GetToken().removeToken();
       return false;
     }
   }
 }
 
-// access eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLQktC40YLQsNC70LjQudCQ0L3QtNGA0LXQtdCy0LjRhyIsInJvbGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfU1RVREVOVCJ9XSwidXNlcl9pZCI6OSwiaXNzIjoibmN0aS1iYWNrZW5kIiwiZXhwIjoxNjgzMTMxNDM5LCJpYXQiOjE2ODI1MjY2Mzl9.5JRwZOk4XXe1JJTbXrHEvh-FuLZrHiEaExdD4YRpZPu2SmxUEodq9AzcI1Y2z44FBjv0EYKK-XB152Bko-SbXA
-// refresh eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLQktC40YLQsNC70LjQudCQ0L3QtNGA0LXQtdCy0LjRhyIsImlzcyI6Im5jdGktYmFja2VuZCIsImV4cCI6MTY4MzczNjIzOSwiaWF0IjoxNjgyNTI2NjM5fQ.HDjCn0Z3r8MaV3bAYQbgubfjamDr9aSno0v_v8Hk1jLLiCqEGjswREaBkbe1ixvmIOdS4AXhMaP3KI9g7PMUJw
 class AuthorizationRepositories {
   Future<bool> isLogin() async {
     final prefs = await SharedPreferences.getInstance();
     String? refreshToken = prefs.getString('refreshToken');
-    // debugPrint('isLogin get access $refreshToken');
 
     if (refreshToken != null) {
       return true;
     } else {
+      GetToken().removeToken();
       return false;
     }
   }
@@ -80,9 +66,6 @@ class GetToken {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('refreshToken');
     prefs.remove('accessToken');
-
-    // debugPrint(prefs.getString('accessToken'));
-    // debugPrint(prefs.getString('refreshToken'));
   }
 
   Future<String?> getAccessToken() async {
@@ -111,20 +94,6 @@ class GetToken {
   }
 }
 
-class EnabledTheme {
-  Future<bool> getTheme() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    return prefs.getBool('isDark') ?? false;
-  }
-
-  Future<void> setTheme(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    debugPrint('Записана $value');
-    await prefs.setBool('isDark', value);
-  }
-}
-
 class UpdateToken {
   Future updateToken() async {
     String? refreshToken = await GetToken().getRefreshToken();
@@ -147,6 +116,8 @@ class UpdateToken {
 
       await prefs.setString('accessToken', accessToken);
       await prefs.setString('refreshToken', refreshToken);
+    } else {
+      GetToken().removeToken();
     }
   }
 }
@@ -201,7 +172,7 @@ class GetUser {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      debugPrint('User получено');
+      // debugPrint('Student получено');
 
       final responseBody = utf8.decode(response.bodyBytes);
 
@@ -219,7 +190,7 @@ class GetUser {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      debugPrint('Teacher получено');
+      // debugPrint('Teacher получено');
       final responseBody = utf8.decode(response.bodyBytes);
 
       // debugPrint(responseBody);

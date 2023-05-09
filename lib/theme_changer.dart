@@ -7,17 +7,13 @@ class ThemeModel extends ChangeNotifier {
 
   bool _isDark = false;
 
-  ThemeModel() {
-    debugPrint('я тут');
-  }
-
   bool get isDark => _isDark;
 
   Future<void> toggleTheme() async {
     final prefs = await SharedPreferences.getInstance();
     _isDark = !_isDark;
     prefs.setBool(_isDarkThemeKey, _isDark);
-    debugPrint('записана $_isDark тема');
+
     notifyListeners();
   }
 
@@ -25,7 +21,7 @@ class ThemeModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final isDark = prefs.getBool(_isDarkThemeKey) ?? false;
     _isDark = isDark;
-    debugPrint('получена $_isDark тема');
+
     notifyListeners();
   }
 

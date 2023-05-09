@@ -6,18 +6,23 @@ import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/schedule/widgets/schedule_student_lessons.dart';
 import 'package:ncti/schedule/widgets/schedule_teacher_lessons.dart';
 
-import 'models/student_schedule.dart';
-
 @RoutePage()
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SchedulePageState createState() => _SchedulePageState();
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    gettingSched();
+  }
+
   static List<String> lessonsOfWeek = [
     "Понедельник",
     "Вторник",
@@ -30,12 +35,9 @@ class _SchedulePageState extends State<SchedulePage> {
   dynamic dataJson = '';
   bool isLoading = true;
   List<String> role = [];
-  String selectedDay = lessonsOfWeek[0];
+  String selectedDay = lessonsOfWeek[DateTime.now().weekday - 1];
 
   void gettingSched() async {
-    // debugPrint('До получения $isLoading');
-    // AutoRouter.of(context).push(LoadingRoute());
-
     GetToken().getAccessToken().then((value) {
       String? result = value;
       if (result != null) {
@@ -80,25 +82,24 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      gettingSched();
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       );
-    }
-    if (role.contains('ROLE_TEACHER')) {
-      return TeacherDayWidget(
-        dataJson: dataJson,
-      );
-    } else if (role.contains('ROLE_STUDENT')) {
-      return StudentDayWidget(dataJson: dataJson);
     } else {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      if (role.contains('ROLE_TEACHER')) {
+        return TeacherDayWidget(
+          dataJson: dataJson,
+        );
+      } else if (role.contains('ROLE_STUDENT')) {
+        return StudentDayWidget(dataJson: dataJson);
+      } else {
+        return const Scaffold(
+            body: Center(
+          child: Text('Произошла ошибка'),
+        ));
+      }
     }
   }
 }

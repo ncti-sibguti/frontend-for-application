@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
         // Получение User
 
         if (authorities.contains('ROLE_STUDENT')) {
+          // debugPrint('Студент юзер запрос');
           // debugPrint('Это Студент');
           GetUser().getStudent().then((data) {
             Map<String, dynamic> result = jsonDecode(data);
@@ -54,6 +55,7 @@ class _HomePageState extends State<HomePage> {
             // AutoRouter.of(context).pop();
           });
         } else if (authorities.contains('ROLE_TEACHER')) {
+          // debugPrint('Тичер юзер запрос');
           // debugPrint('Это преподаватель');
           GetUser().getTeacher().then((data) {
             Map<String, dynamic> result = jsonDecode(data);
@@ -78,7 +80,7 @@ class _HomePageState extends State<HomePage> {
       return AutoTabsScaffold(
         routes: const [ScheduleRoute(), ChatRoute(), UserRoute()],
         appBarBuilder: (_, tabsRouter) => AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
           title: const Text('КТИ СибГУТИ'),
         ),
@@ -162,9 +164,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         bottomNavigationBuilder: (_, tabsRouter) => SalomonBottomBar(
-            unselectedItemColor: Theme.of(context).hintColor,
-            selectedItemColor: Theme.of(context).hintColor,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             margin: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 10,
