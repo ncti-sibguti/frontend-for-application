@@ -30,7 +30,7 @@ class StudentLessonWidget extends StatelessWidget {
                 title: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Text(
-                    lesson.subject,
+                    lesson.subject.name,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),

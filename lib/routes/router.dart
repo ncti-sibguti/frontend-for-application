@@ -2,6 +2,7 @@ import 'package:ncti/chat/chat_page.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/schedule/schedule_page.dart';
 import 'package:ncti/maps/user_page.dart';
+import 'package:ncti/calendar/calendar.dart';
 
 import 'package:ncti/Auth/login_page.dart';
 
@@ -32,7 +33,9 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
           AutoRoute(page: ScheduleRoute.page, initial: true),
           AutoRoute(page: UserRoute.page),
           AutoRoute(page: ChatRoute.page),
+          //drawer
         ]),
+        AutoRoute(page: CalendarRoute.page),
         // AutoRoute(page: ScheduleRoute.page),
         // AutoRoute(page: UserRoute.page),
         // AutoRoute(page: ChatRoute.page),

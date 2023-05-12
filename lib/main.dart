@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:ncti/routes/router.dart';
 import 'package:ncti/theme_changer.dart';
 import 'package:provider/provider.dart';
@@ -8,11 +9,10 @@ void main() async {
 
   final themeModel = ThemeModel();
   await themeModel.loadTheme();
-
-  runApp(ChangeNotifierProvider.value(
-    value: themeModel,
-    child: const MyApp(),
-  ));
+  initializeDateFormatting().then((_) => runApp(ChangeNotifierProvider.value(
+        value: themeModel,
+        child: const MyApp(),
+      )));
 }
 
 class MyApp extends StatelessWidget {

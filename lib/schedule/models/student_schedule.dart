@@ -30,6 +30,16 @@ class Teacher {
   }
 }
 
+class Subject {
+  String name;
+
+  Subject({required this.name});
+
+  factory Subject.fromJson(Map<String, dynamic> json) {
+    return Subject(name: json['name']);
+  }
+}
+
 class Role {
   String name;
 
@@ -48,7 +58,7 @@ class StudentLesson {
   String day;
   int numberPair;
   Teacher teacher;
-  String subject;
+  Subject subject;
   String classroom;
 
   StudentLesson({
@@ -64,7 +74,7 @@ class StudentLesson {
       day: json['day'],
       numberPair: json['numberPair'],
       teacher: Teacher.fromJson(json['teacher']),
-      subject: json['subject'],
+      subject: Subject.fromJson(json['subject']),
       classroom: json['classroom'],
     );
   }
