@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:ncti/schedule/models/student_schedule.dart';
 import 'package:ncti/schedule/models/teacher_schedule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 //192.168.1.122
 const String SERVER = 'http://25.28.126.117:8080/api';
@@ -123,7 +126,7 @@ class UpdateToken {
 }
 
 class GetScheduleRepositories {
-  Future getStudentShedule() async {
+  Future getStudentSchedule() async {
     String? accessToken = await GetToken().getAccessToken();
 
     String url = "$SERVER/student/schedule";
@@ -143,7 +146,7 @@ class GetScheduleRepositories {
     }
   }
 
-  Future getTeacherShedule() async {
+  Future getTeacherSchedule() async {
     String? accessToken = await GetToken().getAccessToken();
 
     String url = "$SERVER/teacher/schedule";
@@ -152,8 +155,6 @@ class GetScheduleRepositories {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      // debugPrint('Расписание получено');
-
       final responseBody = utf8.decode(response.bodyBytes);
       final jsonData = deserializeTeacherLessons(responseBody);
       return jsonData;
@@ -172,8 +173,6 @@ class GetUser {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      // debugPrint('Student получено');
-
       final responseBody = utf8.decode(response.bodyBytes);
 
       return responseBody;
@@ -190,14 +189,143 @@ class GetUser {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      // debugPrint('Teacher получено');
       final responseBody = utf8.decode(response.bodyBytes);
-
-      // debugPrint(responseBody);
 
       return responseBody;
     } else {
       throw Exception('Failed to load teacher');
     }
   }
+
+  Future getAllUser() async {
+    String? accessToken = await GetToken().getAccessToken();
+    String url = "$SERVER/general/users";
+    final response = await http.get(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    });
+
+    if (response.statusCode == 200) {
+      final responseBody = utf8.decode(response.bodyBytes);
+      final respon = parseUsers(responseBody);
+      // debugPrint(respon.toString());
+      return respon;
+    } else {
+      throw Exception('Failed to load all user');
+    }
+  }
+}
+
+class GetChat {
+  Future getChats() async {
+    String? accessToken = await GetToken().getAccessToken();
+    String url = "$SERVER/chat/";
+    final response = await http.get(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    });
+
+    if (response.statusCode == 200) {
+      final responseBody = utf8.decode(response.bodyBytes);
+      final res = parseGroups(responseBody);
+      return res;
+    } else {
+      throw Exception('failed to load chat');
+    }
+  }
+
+  Future getMessages(int id) async {
+    String? accessToken = await GetToken().getAccessToken();
+    String url = "$SERVER/chat/$id";
+    final response = await http.get(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    });
+    if (response.statusCode == 200) {
+      final responseBody = utf8.decode(response.bodyBytes);
+      debugPrint(responseBody);
+      final messages = (jsonDecode(responseBody) as List)
+          .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return messages;
+    } else {
+      throw Exception('failed to load chat');
+    }
+  }
+
+  Future postMessage(String text, int chatId) async {
+    String? accessToken = await GetToken().getAccessToken();
+    final url = Uri.parse('$SERVER/chat/send');
+    final response = await http.post(
+      url,
+      body: jsonEncode({"chatId": chatId, "text": text}),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      },
+    );
+    if (response.statusCode == 200) {
+      debugPrint('сообщение отправлено');
+    }
+  }
+}
+
+class Group {
+  int id;
+  String name;
+  int userCount;
+  String type;
+
+  Group(
+      {required this.id,
+      required this.name,
+      required this.userCount,
+      required this.type});
+
+  factory Group.fromJson(Map<String, dynamic> json) {
+    return Group(
+      id: json['id'],
+      name: json['name'],
+      userCount: json['userCount'],
+      type: json['type'],
+    );
+  }
+}
+
+List<Group> parseGroups(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed.map<Group>((json) => Group.fromJson(json)).toList();
+}
+
+class User {
+  int id;
+  String? firstName;
+  String? lastName;
+  String? surname;
+  String? email;
+  String? username;
+
+  User(
+      {required this.id,
+      required this.firstName,
+      required this.lastName,
+      required this.surname,
+      required this.email,
+      required this.username});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      firstName: json['firstname'],
+      lastName: json['lastname'],
+      surname: json['surname'],
+      email: json['email'],
+      username: json['username'],
+    );
+  }
+}
+
+List<User> parseUsers(String jsonString) {
+  final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
+  return parsed.map<User>((json) => User.fromJson(json)).toList();
 }

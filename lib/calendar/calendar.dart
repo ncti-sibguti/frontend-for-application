@@ -23,13 +23,6 @@ class _CalendarPageState extends State<CalendarPage> {
   late TextEditingController _eventDescriptionController;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
-
-  List<Event> _getEventsForDay(DateTime day) {
-    // Implementation example
-    return _events[day] ?? [];
-  }
 
   @override
   void initState() {
@@ -57,13 +50,16 @@ class _CalendarPageState extends State<CalendarPage> {
     super.dispose();
   }
 
+  List<Event> _getEventsForDay(DateTime day) {
+    // Implementation example
+    return _events[day] ?? [];
+  }
+
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
-        _rangeStart = null; // Important to clean those
-        _rangeEnd = null;
       });
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
@@ -75,7 +71,7 @@ class _CalendarPageState extends State<CalendarPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Добавить заметку'),
+          title: const Text('Добавить заметку'),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
@@ -100,7 +96,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     hintText: 'Введите текст',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -193,7 +189,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.secondary,
-        title: Text('Календарь'),
+        title: const Text('Календарь'),
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -51,6 +51,28 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const SchedulePage(),
       );
     },
+    PersonalyChatRoute.name: (routeData) {
+      final args = routeData.argsAs<PersonalyChatRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: PersonalyChatPage(
+          key: args.key,
+          chatId: args.chatId,
+          user: args.user,
+        ),
+      );
+    },
+    PublicChatRoute.name: (routeData) {
+      final args = routeData.argsAs<PublicChatRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: PublicChatPage(
+          key: args.key,
+          chatId: args.chatId,
+          group: args.group,
+        ),
+      );
+    },
   };
 }
 
@@ -136,4 +158,92 @@ class ScheduleRoute extends PageRouteInfo<void> {
   static const String name = 'ScheduleRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [PersonalyChatPage]
+class PersonalyChatRoute extends PageRouteInfo<PersonalyChatRouteArgs> {
+  PersonalyChatRoute({
+    Key? key,
+    required int chatId,
+    required User user,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PersonalyChatRoute.name,
+          args: PersonalyChatRouteArgs(
+            key: key,
+            chatId: chatId,
+            user: user,
+          ),
+          rawPathParams: {'chatId': chatId},
+          initialChildren: children,
+        );
+
+  static const String name = 'PersonalyChatRoute';
+
+  static const PageInfo<PersonalyChatRouteArgs> page =
+      PageInfo<PersonalyChatRouteArgs>(name);
+}
+
+class PersonalyChatRouteArgs {
+  const PersonalyChatRouteArgs({
+    this.key,
+    required this.chatId,
+    required this.user,
+  });
+
+  final Key? key;
+
+  final int chatId;
+
+  final User user;
+
+  @override
+  String toString() {
+    return 'PersonalyChatRouteArgs{key: $key, chatId: $chatId, user: $user}';
+  }
+}
+
+/// generated route for
+/// [PublicChatPage]
+class PublicChatRoute extends PageRouteInfo<PublicChatRouteArgs> {
+  PublicChatRoute({
+    Key? key,
+    required int chatId,
+    required Group group,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PublicChatRoute.name,
+          args: PublicChatRouteArgs(
+            key: key,
+            chatId: chatId,
+            group: group,
+          ),
+          rawPathParams: {'chatId': chatId},
+          initialChildren: children,
+        );
+
+  static const String name = 'PublicChatRoute';
+
+  static const PageInfo<PublicChatRouteArgs> page =
+      PageInfo<PublicChatRouteArgs>(name);
+}
+
+class PublicChatRouteArgs {
+  const PublicChatRouteArgs({
+    this.key,
+    required this.chatId,
+    required this.group,
+  });
+
+  final Key? key;
+
+  final int chatId;
+
+  final Group group;
+
+  @override
+  String toString() {
+    return 'PublicChatRouteArgs{key: $key, chatId: $chatId, group: $group}';
+  }
 }

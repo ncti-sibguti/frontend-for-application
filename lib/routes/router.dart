@@ -1,8 +1,11 @@
-import 'package:ncti/chat/chat_page.dart';
+import 'package:flutter/material.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/schedule/schedule_page.dart';
 import 'package:ncti/maps/user_page.dart';
 import 'package:ncti/calendar/calendar.dart';
+import 'package:ncti/chat/chats_page.dart';
+import 'package:ncti/chat/public_chat_page.dart';
+import 'package:ncti/chat/private_chat_page.dart';
 
 import 'package:ncti/Auth/login_page.dart';
 
@@ -29,16 +32,16 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
 
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: HomeRoute.page, initial: true, children: [
+        AutoRoute(path: '/', page: HomeRoute.page, initial: true, children: [
           AutoRoute(page: ScheduleRoute.page, initial: true),
           AutoRoute(page: UserRoute.page),
           AutoRoute(page: ChatRoute.page),
-          //drawer
         ]),
+        AutoRoute(page: PublicChatRoute.page),
+        AutoRoute(page: PersonalyChatRoute.page),
+        //drawer
         AutoRoute(page: CalendarRoute.page),
-        // AutoRoute(page: ScheduleRoute.page),
-        // AutoRoute(page: UserRoute.page),
-        // AutoRoute(page: ChatRoute.page),
+
         AutoRoute(page: LoginRoute.page),
       ];
 }

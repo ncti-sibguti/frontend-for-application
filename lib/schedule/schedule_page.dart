@@ -35,7 +35,7 @@ class _SchedulePageState extends State<SchedulePage> {
   dynamic dataJson = '';
   bool isLoading = true;
   List<String> role = [];
-  String selectedDay = lessonsOfWeek[DateTime.now().weekday - 1];
+  String selectedDay = lessonsOfWeek[0];
 
   void gettingSched() async {
     GetToken().getAccessToken().then((value) {
@@ -55,24 +55,18 @@ class _SchedulePageState extends State<SchedulePage> {
         // Получение расписания
 
         if (authorities.contains('ROLE_STUDENT')) {
-          // debugPrint('Это Студент');
-          GetScheduleRepositories().getStudentShedule().then((data) {
+          GetScheduleRepositories().getStudentSchedule().then((data) {
             setState(() {
               isLoading = false;
               dataJson = data;
             });
-            // debugPrint('После получения $isLoading');
-            // AutoRouter.of(context).pop();
           });
         } else if (authorities.contains('ROLE_TEACHER')) {
-          // debugPrint('Это преподаватель');
-          GetScheduleRepositories().getTeacherShedule().then((data) {
+          GetScheduleRepositories().getTeacherSchedule().then((data) {
             setState(() {
               isLoading = false;
               dataJson = data;
             });
-            // debugPrint('После получения $isLoading');
-            // AutoRouter.of(context).pop();
           });
         }
       }
