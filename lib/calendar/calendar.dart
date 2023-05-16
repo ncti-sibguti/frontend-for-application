@@ -1,9 +1,5 @@
-import 'dart:collection';
-
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'model/calendar_model.dart';
@@ -15,7 +11,7 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  late Map<DateTime, List<Event>> _events;
+  final Map<DateTime, List<Event>> _events = {};
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
@@ -29,7 +25,8 @@ class _CalendarPageState extends State<CalendarPage> {
     super.initState();
     _eventTitleController = TextEditingController();
     _eventDescriptionController = TextEditingController();
-    _events = {};
+    // _events = {};
+
     _selectedDay = DateTime.now();
     _selectedEvents = ValueNotifier<List<Event>>([]);
     EventStorage().loadEvents().then((events) {
@@ -60,9 +57,8 @@ class _CalendarPageState extends State<CalendarPage> {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
+        _selectedEvents.value = _getEventsForDay(focusedDay);
       });
-
-      _selectedEvents.value = _getEventsForDay(selectedDay);
     }
   }
 
@@ -96,9 +92,6 @@ class _CalendarPageState extends State<CalendarPage> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     hintText: 'Введите текст',
-                    hintStyle: const TextStyle(
-                      fontStyle: FontStyle.italic,
-                    ),
                   ),
                 ),
               ],
@@ -125,16 +118,12 @@ class _CalendarPageState extends State<CalendarPage> {
                 final title = _eventTitleController.text;
                 final description = _eventDescriptionController.text;
                 final event = Event(
-                    title: title,
-                    description: description,
-                    date: _selectedDay!);
+                    title: title, description: description, date: _focusedDay);
                 setState(() {
-                  _events[_selectedDay!] = [
-                    ..._events[_selectedDay] ?? [],
-                    event
-                  ];
+                  _events[event.date] = [..._events[event.date] ?? [], event];
                 });
                 EventStorage().saveEvent(event);
+
                 AutoRouter.of(context).pop();
                 _eventTitleController.clear();
                 _eventDescriptionController.clear();
@@ -200,15 +189,6 @@ class _CalendarPageState extends State<CalendarPage> {
                 CalendarFormat.month: 'Месяц',
                 // CalendarFormat.week: 'Неделя'
               },
-              headerStyle: HeaderStyle(
-                formatButtonDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 5.0)),
-                formatButtonShowsNext: false,
-                titleCentered: true,
-              ),
               locale: "ru_RU",
               startingDayOfWeek: StartingDayOfWeek.monday,
               weekNumbersVisible: true,
@@ -219,7 +199,7 @@ class _CalendarPageState extends State<CalendarPage> {
               calendarFormat: _calendarFormat,
               firstDay: kFirstDay,
               lastDay: kLastDay,
-              focusedDay: _focusedDay,
+              focusedDay: _selectedDay!,
               selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
               eventLoader: _getEventsForDay,
               onDaySelected: _onDaySelected,
@@ -231,7 +211,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 }
               },
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 24.0),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(

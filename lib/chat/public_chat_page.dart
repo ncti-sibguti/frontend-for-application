@@ -5,6 +5,7 @@ import 'package:ncti/repository/ncti_repository.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:ncti/routes/router.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../repository/ncti_repository.dart';
 
@@ -24,15 +25,19 @@ class PublicChatPage extends StatefulWidget {
 class _PublicChatPageState extends State<PublicChatPage> {
   List<types.Message> _messages = [];
   final _user = const types.User(id: "3");
+  WebSocketChannel? _channel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    GetChat().getMessages(widget.chatId).then((value) {
+    _channel = WebSocketChannel.connect(
+      Uri.parse('http://25.28.126.117:8080/api/ws'),
+    );
+    _channel!.stream.listen((message) {
       // debugPrint(value.toString());
       setState(() {
-        _messages = value;
+        _messages = message;
       });
     });
   }
@@ -55,7 +60,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
             showUserAvatars: true,
             showUserNames: true,
             messages: _messages,
-            onSendPressed: _handleSendPressed,
+            onSendPressed: _sendMessage,
             user: _user));
   }
 
@@ -65,16 +70,14 @@ class _PublicChatPageState extends State<PublicChatPage> {
     });
   }
 
-  void _handleSendPressed(types.PartialText message) {
+  void _sendMessage(types.PartialText message) {
+    // Отправляем сообщение по WebSocket-каналу
+    _channel!.sink.add(message);
     final textMessage = types.TextMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: "3",
+      id: '3',
       text: message.text,
-    );
-    GetChat().postMessage(
-      textMessage.text,
-      widget.chatId,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      author: _user,
     );
     _addMessage(textMessage);
   }

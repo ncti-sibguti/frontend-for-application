@@ -42,15 +42,13 @@ class EventStorage {
     final prefs = await SharedPreferences.getInstance();
 
     final jsonEvent = jsonEncode(event.toJson());
-    debugPrint('JSON EVENT $jsonEvent');
-    final jsonEvents = prefs.getStringList(_eventsKey) ?? [];
-    debugPrint('get jsonEventS $jsonEvents');
-    jsonEvents.add(jsonEvent);
-    debugPrint('set jsonEventS $jsonEvents');
-    await prefs.setStringList(_eventsKey, jsonEvents);
 
-    final jsonEventsTest = prefs.getStringList(_eventsKey) ?? [];
-    debugPrint('json after update $jsonEventsTest');
+    final jsonEvents = prefs.getStringList(_eventsKey) ?? [];
+
+    jsonEvents.add(jsonEvent);
+
+    await prefs.setStringList(_eventsKey, jsonEvents);
+    debugPrint('событие ${event.date} ${event.title} записано');
   }
 
   Future<void> removeEvent(Event event) async {

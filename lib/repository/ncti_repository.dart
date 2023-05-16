@@ -219,7 +219,7 @@ class GetUser {
 class GetChat {
   Future getChats() async {
     String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/chat/";
+    String url = "$SERVER/chats";
     final response = await http.get(Uri.parse(url), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken'
@@ -236,7 +236,7 @@ class GetChat {
 
   Future getMessages(int id) async {
     String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/chat/$id";
+    String url = "$SERVER/chats/$id";
     final response = await http.get(Uri.parse(url), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken'
@@ -268,26 +268,46 @@ class GetChat {
       debugPrint('сообщение отправлено');
     }
   }
+
+  // Future webPostMessage(String text, int chatId){
+
+  //   final WebSocketChannel channel = IOWebSocketChannel.connect('wss://your-websocket-url');
+  // }
+
+  Future createChat(String name, List<int> selectedUser) async {
+    String? accessToken = await GetToken().getAccessToken();
+    final url = Uri.parse('$SERVER/chat/create/');
+    final response = await http.post(
+      url,
+      body: jsonEncode({"name": name, "ids": selectedUser}),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      },
+    );
+    debugPrint(response.body);
+  }
 }
 
 class Group {
   int id;
   String name;
   int userCount;
-  String type;
+  // String type;
 
-  Group(
-      {required this.id,
-      required this.name,
-      required this.userCount,
-      required this.type});
+  Group({
+    required this.id,
+    required this.name,
+    required this.userCount,
+    // required this.type
+  });
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
       id: json['id'],
       name: json['name'],
       userCount: json['userCount'],
-      type: json['type'],
+      // type: json['type'],
     );
   }
 }
@@ -299,11 +319,11 @@ List<Group> parseGroups(String responseBody) {
 
 class User {
   int id;
-  String? firstName;
-  String? lastName;
-  String? surname;
-  String? email;
-  String? username;
+  String firstName;
+  String lastName;
+  String surname;
+  String email;
+  String username;
 
   User(
       {required this.id,
