@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-import 'package:web_socket_channel/web_socket_channel.dart';
-
 class CreateGroupChatModal extends StatefulWidget {
   @override
   _CreateGroupChatModalState createState() => _CreateGroupChatModalState();
@@ -17,7 +15,6 @@ class _CreateGroupChatModalState extends State<CreateGroupChatModal> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     gettingUser();
   }
@@ -39,7 +36,7 @@ class _CreateGroupChatModalState extends State<CreateGroupChatModal> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Create Group Chat',
+              'Создать групповой чат',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
@@ -48,21 +45,38 @@ class _CreateGroupChatModalState extends State<CreateGroupChatModal> {
             const SizedBox(height: 16.0),
             TextField(
               controller: _groupNameController,
-              decoration: const InputDecoration(
-                labelText: 'Group Name',
-                border: OutlineInputBorder(),
-              ),
+              decoration: InputDecoration(
+                  labelText: 'Название группы',
+                  border: const OutlineInputBorder(),
+                  labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.background)),
+              style: TextStyle(color: Theme.of(context).colorScheme.background),
             ),
             const SizedBox(height: 16.0),
             MultiSelectDialogField(
+                confirmText: Text(
+                  'Подтвердить',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.background),
+                ),
+                cancelText: Text(
+                  'Отмена',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.background),
+                ),
+                itemsTextStyle:
+                    TextStyle(color: Theme.of(context).colorScheme.background),
+                selectedItemsTextStyle:
+                    TextStyle(color: Theme.of(context).colorScheme.background),
+                selectedColor: Theme.of(context).colorScheme.secondary,
                 items: users
                     .map((user) => MultiSelectItem<User>(
                           user,
-                          user.lastName,
+                          '${user.firstName} ${user.lastName}',
                         ))
                     .toList(),
-                title: Text('Select Users'),
-                buttonText: Text('Select'),
+                title: const Text('Выберите пользователей'),
+                buttonText: const Text('Выбрать пользователей'),
                 onConfirm: (selectedUsers) {
                   setState(() {
                     _selectedUsers = selectedUsers;
@@ -77,7 +91,11 @@ class _CreateGroupChatModalState extends State<CreateGroupChatModal> {
 
                 Navigator.pop(context);
               },
-              child: const Text('Create'),
+              child: Text(
+                'Создать чат',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.background),
+              ),
             ),
           ],
         ),

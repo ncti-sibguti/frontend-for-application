@@ -33,24 +33,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ChatPage(),
       );
     },
-    HomeRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const HomePage(),
-      );
-    },
-    UserRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const UserPage(),
-      );
-    },
-    ScheduleRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SchedulePage(),
-      );
-    },
     PersonalyChatRoute.name: (routeData) {
       final args = routeData.argsAs<PersonalyChatRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -70,7 +52,27 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           chatId: args.chatId,
           group: args.group,
+          accessToken: args.accessToken,
+          id: args.id,
         ),
+      );
+    },
+    HomeRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const HomePage(),
+      );
+    },
+    UserRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const UserPage(),
+      );
+    },
+    ScheduleRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SchedulePage(),
       );
     },
   };
@@ -114,48 +116,6 @@ class ChatRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'ChatRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [HomePage]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
-      : super(
-          HomeRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'HomeRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [UserPage]
-class UserRoute extends PageRouteInfo<void> {
-  const UserRoute({List<PageRouteInfo>? children})
-      : super(
-          UserRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'UserRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [SchedulePage]
-class ScheduleRoute extends PageRouteInfo<void> {
-  const ScheduleRoute({List<PageRouteInfo>? children})
-      : super(
-          ScheduleRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'ScheduleRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -209,8 +169,10 @@ class PersonalyChatRouteArgs {
 class PublicChatRoute extends PageRouteInfo<PublicChatRouteArgs> {
   PublicChatRoute({
     Key? key,
-    required int chatId,
+    required String chatId,
     required Group group,
+    required String accessToken,
+    required String id,
     List<PageRouteInfo>? children,
   }) : super(
           PublicChatRoute.name,
@@ -218,6 +180,8 @@ class PublicChatRoute extends PageRouteInfo<PublicChatRouteArgs> {
             key: key,
             chatId: chatId,
             group: group,
+            accessToken: accessToken,
+            id: id,
           ),
           rawPathParams: {'chatId': chatId},
           initialChildren: children,
@@ -234,16 +198,64 @@ class PublicChatRouteArgs {
     this.key,
     required this.chatId,
     required this.group,
+    required this.accessToken,
+    required this.id,
   });
 
   final Key? key;
 
-  final int chatId;
+  final String chatId;
 
   final Group group;
 
+  final String accessToken;
+
+  final String id;
+
   @override
   String toString() {
-    return 'PublicChatRouteArgs{key: $key, chatId: $chatId, group: $group}';
+    return 'PublicChatRouteArgs{key: $key, chatId: $chatId, group: $group, accessToken: $accessToken, id: $id}';
   }
+}
+
+/// generated route for
+/// [HomePage]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute({List<PageRouteInfo>? children})
+      : super(
+          HomeRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'HomeRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [UserPage]
+class UserRoute extends PageRouteInfo<void> {
+  const UserRoute({List<PageRouteInfo>? children})
+      : super(
+          UserRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'UserRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SchedulePage]
+class ScheduleRoute extends PageRouteInfo<void> {
+  const ScheduleRoute({List<PageRouteInfo>? children})
+      : super(
+          ScheduleRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ScheduleRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }

@@ -9,9 +9,11 @@ import 'package:ncti/schedule/models/teacher_schedule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:web_socket_channel/io.dart';
 
 //192.168.1.122
 const String SERVER = 'http://25.28.126.117:8080/api';
+const String WEBSERVER = 'ws://25.28.126.117:8080/api';
 
 class LoginRepositories {
   Future<bool> login(TextEditingController usernameController,
@@ -234,9 +236,9 @@ class GetChat {
     }
   }
 
-  Future getMessages(int id) async {
+  Future getMessages(String chatId) async {
     String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/chats/$id";
+    String url = "$SERVER/chats/$chatId";
     final response = await http.get(Uri.parse(url), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken'
@@ -253,12 +255,12 @@ class GetChat {
     }
   }
 
-  Future postMessage(String text, int chatId) async {
+  Future postMessage(String text, String chatId) async {
     String? accessToken = await GetToken().getAccessToken();
-    final url = Uri.parse('$SERVER/chat/send');
+    final url = Uri.parse('$SERVER/chats/$chatId');
     final response = await http.post(
       url,
-      body: jsonEncode({"chatId": chatId, "text": text}),
+      body: jsonEncode({"text": text}),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $accessToken'
@@ -266,9 +268,20 @@ class GetChat {
     );
     if (response.statusCode == 200) {
       debugPrint('сообщение отправлено');
+      debugPrint(response.body);
     }
   }
 
+  // Future connectChat(String chatId) async {
+  //   String? accessToken = await GetToken().getAccessToken();
+  //   IOWebSocketChannel.connect(
+  //     Uri.parse('ws://25.28.126.117:8080/api/chat/$chatId/join'),
+  //     headers: {
+  //       'Content-type': 'application/json',
+  //       'Authorization': 'Bearer $accessToken'
+  //     },
+  //   );
+  // }
   // Future webPostMessage(String text, int chatId){
 
   //   final WebSocketChannel channel = IOWebSocketChannel.connect('wss://your-websocket-url');
@@ -276,7 +289,7 @@ class GetChat {
 
   Future createChat(String name, List<int> selectedUser) async {
     String? accessToken = await GetToken().getAccessToken();
-    final url = Uri.parse('$SERVER/chat/create/');
+    final url = Uri.parse('$SERVER/chats/create/');
     final response = await http.post(
       url,
       body: jsonEncode({"name": name, "ids": selectedUser}),
@@ -290,7 +303,7 @@ class GetChat {
 }
 
 class Group {
-  int id;
+  String id;
   String name;
   int userCount;
   // String type;

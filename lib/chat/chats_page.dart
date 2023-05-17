@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:ncti/chat/create_group_chat.dart';
 import 'package:ncti/chat/user_list_modal.dart';
 import 'package:ncti/repository/ncti_repository.dart';
@@ -15,11 +16,21 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  String? accessToken;
+  String? id;
   @override
   void initState() {
     super.initState();
     gettingChat();
     gettingUser();
+    GetToken().getAccessToken().then((value) {
+      final jwtToken = Jwt.parseJwt(value!);
+      int _id = jwtToken['user_id'];
+      setState(() {
+        id = _id.toString();
+        accessToken = value;
+      });
+    });
   }
 
   List<User> users = [];
@@ -60,7 +71,10 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.pending_actions),
+          child: Icon(
+            Icons.create_outlined,
+            color: Theme.of(context).colorScheme.primary,
+          ),
           onPressed: () {
             _openCreateGroupChatModal(context);
           },
@@ -80,7 +94,10 @@ class _ChatPageState extends State<ChatPage> {
                   //       chatId: chats[index].id, user: users[index]));
                   // } else {
                   AutoRouter.of(context).push(PublicChatRoute(
-                      chatId: chats[index].id, group: chats[index]));
+                      chatId: chats[index].id,
+                      group: chats[index],
+                      accessToken: accessToken!,
+                      id: id!));
                   // }
                 })));
   }

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 import 'model/calendar_model.dart';
 
@@ -141,10 +144,11 @@ class _CalendarPageState extends State<CalendarPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(event.title,
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
+              style:
+                  TextStyle(color: Theme.of(context).colorScheme.background)),
           content: Text(
             event.description,
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            style: TextStyle(color: Theme.of(context).colorScheme.background),
           ),
           actions: [
             TextButton(
