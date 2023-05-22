@@ -4,15 +4,11 @@ class Teacher {
   String firstname;
   String lastname;
   String surname;
-  String email;
-  List<Role> roles;
 
   Teacher({
     required this.firstname,
     required this.lastname,
     required this.surname,
-    required this.email,
-    required this.roles,
   });
 
   factory Teacher.fromJson(Map<String, dynamic> json) {
@@ -20,36 +16,6 @@ class Teacher {
       firstname: json['firstname'],
       lastname: json['lastname'],
       surname: json['surname'],
-      email: json['email'],
-      roles: (json['roles'] != null)
-          ? List<Role>.from(
-              json['roles'].map((role) => Role.fromJson(role)),
-            )
-          : [],
-    );
-  }
-}
-
-class Subject {
-  String name;
-
-  Subject({required this.name});
-
-  factory Subject.fromJson(Map<String, dynamic> json) {
-    return Subject(name: json['name']);
-  }
-}
-
-class Role {
-  String name;
-
-  Role({
-    required this.name,
-  });
-
-  factory Role.fromJson(Map<String, dynamic> json) {
-    return Role(
-      name: json['name'],
     );
   }
 }
@@ -58,7 +24,7 @@ class StudentLesson {
   String day;
   int numberPair;
   Teacher teacher;
-  Subject subject;
+  String subject;
   String classroom;
 
   StudentLesson({
@@ -74,7 +40,7 @@ class StudentLesson {
       day: json['day'],
       numberPair: json['numberPair'],
       teacher: Teacher.fromJson(json['teacher']),
-      subject: Subject.fromJson(json['subject']),
+      subject: json['subject'],
       classroom: json['classroom'],
     );
   }

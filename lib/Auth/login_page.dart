@@ -150,7 +150,13 @@ class _LoginPageState extends State<LoginPage> {
                                     onPressed: () {
                                       AutoRouter.of(context).pop();
                                     },
-                                    child: const Text('Понял'))
+                                    child: Text(
+                                      'Понятно',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .background),
+                                    ))
                               ],
                             );
                           });

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:ncti/theme.dart';
+import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 @RoutePage()
@@ -38,7 +40,6 @@ class _PublicChatPageState extends State<PublicChatPage> {
         _messages = value;
       });
     });
-    debugPrint(_messages.toString());
   }
 
   @override
@@ -46,18 +47,26 @@ class _PublicChatPageState extends State<PublicChatPage> {
     final user = types.User(id: widget.id);
     // final _user = types.User(id: userId.toString());
 
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          title: Text('${widget.group.name}'),
-        ),
-        body: Chat(
-            l10n: ChatL10nRu(),
-            showUserAvatars: true,
-            showUserNames: true,
-            messages: _messages,
-            onSendPressed: _sendMessage,
-            user: user));
+    return SafeArea(
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              title: Text('${widget.group.name}'),
+            ),
+            body: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Chat(
+                l10n: const ChatL10nRu(),
+                showUserAvatars: true,
+                showUserNames: true,
+                messages: _messages,
+                onSendPressed: _sendMessage,
+                user: user,
+                theme: Theme.of(context).brightness == Brightness.dark
+                    ? AppTheme.chatDark
+                    : AppTheme.chatLight,
+              ),
+            )));
   }
 
   void _addMessage(types.Message message) {
@@ -69,7 +78,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
   void _sendMessage(types.PartialText message) {
     final user = types.User(id: widget.id);
     final textMessage = types.TextMessage(
-      id: '3',
+      id: Uuid().v4(),
       text: message.text,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       author: user,

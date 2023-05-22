@@ -36,8 +36,8 @@ class TeacherLessonWidget extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    'Группы ${lesson.groups} \nКабинет ${lesson.classroom}',
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    'Группы ${lesson.groups.join(',')} \n${lesson.classroom}',
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
                 ),
               ),

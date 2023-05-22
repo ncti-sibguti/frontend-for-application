@@ -81,25 +81,43 @@ class _ChatPageState extends State<ChatPage> {
         ),
         body: ListView.builder(
             itemCount: chats.length,
-            itemBuilder: (context, index) => ListTile(
-                title: Text(
-                  chats[index].name,
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                subtitle: Text('Участников: ${chats[index].userCount}'),
-                onTap: () {
-                  // if (chats[index].type == 'PRIVATE') {
-                  //   AutoRouter.of(context).push(PersonalyChatRoute(
-                  //       chatId: chats[index].id, user: users[index]));
-                  // } else {
-                  AutoRouter.of(context).push(PublicChatRoute(
-                      chatId: chats[index].id,
-                      group: chats[index],
-                      accessToken: accessToken!,
-                      id: id!));
-                  // }
-                })));
+            itemBuilder: (context, index) => Container(
+                  decoration: BoxDecoration(
+                      // Цвет фона элемента списка
+
+                      border: Border(
+                          bottom: BorderSide(
+                              width: 1,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .background)) // Закругление углов
+                      ),
+                  child: ListTile(
+                      leading: Icon(
+                        Icons.groups_3_outlined,
+                        size: 50,
+                        color: Theme.of(context).colorScheme.background,
+                      ),
+                      title: Text(
+                        chats[index].name,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.background),
+                      ),
+                      subtitle: Text('Участников: ${chats[index].userCount}'),
+                      onTap: () {
+                        // if (chats[index].type == 'PRIVATE') {
+                        //   AutoRouter.of(context).push(PersonalyChatRoute(
+                        //       chatId: chats[index].id, user: users[index]));
+                        // } else {
+                        AutoRouter.of(context).push(PublicChatRoute(
+                            chatId: chats[index].id,
+                            group: chats[index],
+                            accessToken: accessToken!,
+                            id: id!));
+
+                        // }
+                      }),
+                )));
   }
 }
 

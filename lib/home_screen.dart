@@ -28,8 +28,6 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = true;
 
   void getUser() async {
-    // debugPrint('До получения $isLoading');
-
     GetToken().getAccessToken().then((value) {
       String? result = value;
       if (result != null) {
@@ -39,9 +37,6 @@ class _HomePageState extends State<HomePage> {
         for (var role in roles) {
           authorities.add(role['authority']);
         }
-
-        // Получение User
-
         if (authorities.contains('ROLE_STUDENT')) {
           // debugPrint('Студент юзер запрос');
           // debugPrint('Это Студент');
@@ -51,20 +46,14 @@ class _HomePageState extends State<HomePage> {
               isLoading = false;
               dataUser = result;
             });
-            // debugPrint('После получения $isLoading');
-            // AutoRouter.of(context).pop();
           });
         } else if (authorities.contains('ROLE_TEACHER')) {
-          // debugPrint('Тичер юзер запрос');
-          // debugPrint('Это преподаватель');
           GetUser().getTeacher().then((data) {
             Map<String, dynamic> result = jsonDecode(data);
             setState(() {
               isLoading = false;
               dataUser = result;
             });
-            // debugPrint('После получения $isLoading');
-            // AutoRouter.of(context).pop();
           });
         }
       }
@@ -155,6 +144,16 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.password_outlined),
+                title: Text(
+                  'Смена пароля',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                onTap: () {
+                  AutoRouter.of(context).push(const ChangePasswordRoute());
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.door_sliding_outlined),
                 title: Text('Выйти',
                     style: Theme.of(context).textTheme.bodyMedium),
@@ -162,8 +161,6 @@ class _HomePageState extends State<HomePage> {
                   GetToken().removeToken();
                   AutoRouter.of(context).pushAndPopUntil(const LoginRoute(),
                       predicate: (route) => route.settings.name == '/login');
-                  // Update the state of the app.
-                  // ...
                 },
               ),
             ],

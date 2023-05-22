@@ -249,7 +249,7 @@ class _CalendarPageState extends State<CalendarPage> {
           return ListTile(
             title: Text(
               event.title,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             subtitle: Text(event.description),
             trailing: Icon(Icons.delete_outline),

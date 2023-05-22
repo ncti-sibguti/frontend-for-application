@@ -6,6 +6,7 @@ import 'package:ncti/calendar/calendar.dart';
 import 'package:ncti/chat/chats_page.dart';
 import 'package:ncti/chat/public_chat_page.dart';
 import 'package:ncti/chat/private_chat_page.dart';
+import 'package:ncti/Auth/change_password.dart';
 
 import 'package:ncti/Auth/login_page.dart';
 
@@ -41,7 +42,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         AutoRoute(page: PersonalyChatRoute.page),
         //drawer
         AutoRoute(page: CalendarRoute.page),
-
+        AutoRoute(page: ChangePasswordRoute.page),
         AutoRoute(page: LoginRoute.page),
       ];
 }

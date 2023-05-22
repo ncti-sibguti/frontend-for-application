@@ -50,6 +50,28 @@ class LoginRepositories {
       return false;
     }
   }
+
+  Future changePassword(TextEditingController passwordController) async {
+    String? accessToken = await GetToken().getAccessToken();
+
+    final password = passwordController.text;
+    final url = Uri.parse('$SERVER/user/change-password');
+    final response = await http.patch(
+      url,
+      body: jsonEncode({"password": password}),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      },
+    );
+
+    passwordController.clear();
+
+    if (response.statusCode == 200) {
+      debugPrint('изменился');
+      return true;
+    }
+  }
 }
 
 class AuthorizationRepositories {
@@ -137,11 +159,8 @@ class GetScheduleRepositories {
       'Authorization': 'Bearer $accessToken'
     });
     if (response.statusCode == 200) {
-      // debugPrint('Расписание получено');
-
       final responseBody = utf8.decode(response.bodyBytes);
       final jsonData = deserializeStudentLessons(responseBody);
-
       return jsonData;
     } else {
       throw Exception('Failed to load student schedule');
@@ -201,7 +220,7 @@ class GetUser {
 
   Future getAllUser() async {
     String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/general/users";
+    String url = "$SERVER/user/users";
     final response = await http.get(Uri.parse(url), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken'
@@ -245,7 +264,6 @@ class GetChat {
     });
     if (response.statusCode == 200) {
       final responseBody = utf8.decode(response.bodyBytes);
-      debugPrint(responseBody);
       final messages = (jsonDecode(responseBody) as List)
           .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -266,26 +284,7 @@ class GetChat {
         'Authorization': 'Bearer $accessToken'
       },
     );
-    if (response.statusCode == 200) {
-      debugPrint('сообщение отправлено');
-      debugPrint(response.body);
-    }
   }
-
-  // Future connectChat(String chatId) async {
-  //   String? accessToken = await GetToken().getAccessToken();
-  //   IOWebSocketChannel.connect(
-  //     Uri.parse('ws://25.28.126.117:8080/api/chat/$chatId/join'),
-  //     headers: {
-  //       'Content-type': 'application/json',
-  //       'Authorization': 'Bearer $accessToken'
-  //     },
-  //   );
-  // }
-  // Future webPostMessage(String text, int chatId){
-
-  //   final WebSocketChannel channel = IOWebSocketChannel.connect('wss://your-websocket-url');
-  // }
 
   Future createChat(String name, List<int> selectedUser) async {
     String? accessToken = await GetToken().getAccessToken();

@@ -20,7 +20,7 @@ class _SchedulePageState extends State<SchedulePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    gettingSched();
+    getSched();
   }
 
   static List<String> lessonsOfWeek = [
@@ -37,7 +37,7 @@ class _SchedulePageState extends State<SchedulePage> {
   List<String> role = [];
   String selectedDay = lessonsOfWeek[0];
 
-  void gettingSched() async {
+  void getSched() async {
     GetToken().getAccessToken().then((value) {
       String? result = value;
       if (result != null) {
@@ -47,7 +47,6 @@ class _SchedulePageState extends State<SchedulePage> {
         for (var role in roles) {
           authorities.add(role['authority']);
         }
-
         setState(() {
           role = authorities;
         });
