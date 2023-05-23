@@ -16,7 +16,7 @@ class UserListModal extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.secondary,
-        title: Text('Выбери собеседника'),
+        title: const Text('Выбери собеседника'),
       ),
       body: ListView.builder(
         itemCount: users.length,

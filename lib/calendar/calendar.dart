@@ -1,9 +1,8 @@
-import 'dart:convert';
+// ignore_for_file: library_private_types_in_public_api
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/intl.dart';
 
 import 'model/calendar_model.dart';
 
@@ -252,13 +251,13 @@ class _CalendarPageState extends State<CalendarPage> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             subtitle: Text(event.description),
-            trailing: Icon(Icons.delete_outline),
+            trailing: const Icon(Icons.delete_outline),
             onTap: () => _showViewDialog(event),
           );
         },
       );
     } else {
-      return Center(
+      return const Center(
         child: Text('Заметки не найдены'),
       );
     }

@@ -4,10 +4,12 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class CreateGroupChatModal extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _CreateGroupChatModalState createState() => _CreateGroupChatModalState();
 }
 
 class _CreateGroupChatModalState extends State<CreateGroupChatModal> {
+  // ignore: prefer_final_fields
   TextEditingController _groupNameController = TextEditingController();
   List<User> users = [];
   List<User> _selectedUsers = [];

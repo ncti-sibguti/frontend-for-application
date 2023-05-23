@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -25,9 +27,9 @@ class _ChatPageState extends State<ChatPage> {
     gettingUser();
     GetToken().getAccessToken().then((value) {
       final jwtToken = Jwt.parseJwt(value!);
-      int _id = jwtToken['user_id'];
+      int id = jwtToken['user_id'];
       setState(() {
-        id = _id.toString();
+        id = id;
         accessToken = value;
       });
     });

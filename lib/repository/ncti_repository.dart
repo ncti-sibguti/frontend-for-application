@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -9,10 +8,9 @@ import 'package:ncti/schedule/models/teacher_schedule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:web_socket_channel/io.dart';
 
 //192.168.1.122
-const String SERVER = 'http://25.28.126.117:8080/api';
+const String SERVER = 'http://192.168.49.192:8080/api';
 const String WEBSERVER = 'ws://25.28.126.117:8080/api';
 
 class LoginRepositories {
@@ -284,6 +282,9 @@ class GetChat {
         'Authorization': 'Bearer $accessToken'
       },
     );
+    if (response.statusCode == 200) {
+      return true;
+    }
   }
 
   Future createChat(String name, List<int> selectedUser) async {

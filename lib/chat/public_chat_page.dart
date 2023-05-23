@@ -6,7 +6,6 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:ncti/theme.dart';
 import 'package:uuid/uuid.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 @RoutePage()
 class PublicChatPage extends StatefulWidget {
@@ -28,7 +27,6 @@ class PublicChatPage extends StatefulWidget {
 class _PublicChatPageState extends State<PublicChatPage> {
   List<types.Message> _messages = [];
 
-  WebSocketChannel? _channel;
   String? accessToken;
 
   @override
@@ -51,9 +49,9 @@ class _PublicChatPageState extends State<PublicChatPage> {
         child: Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.secondary,
-              title: Text('${widget.group.name}'),
+              title: Text(widget.group.name),
             ),
-            body: Container(
+            body: SizedBox(
               height: MediaQuery.of(context).size.height,
               child: Chat(
                 l10n: const ChatL10nRu(),
@@ -78,7 +76,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
   void _sendMessage(types.PartialText message) {
     final user = types.User(id: widget.id);
     final textMessage = types.TextMessage(
-      id: Uuid().v4(),
+      id: const Uuid().v4(),
       text: message.text,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       author: user,

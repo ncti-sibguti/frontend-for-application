@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:ncti/repository/ncti_repository.dart';
@@ -9,8 +11,9 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  TextEditingController _newPasswordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _isPasswordValid = true;
 
@@ -18,15 +21,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Смена пароля'),
+        title: const Text('Смена пароля'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 150.0),
+            const SizedBox(height: 150.0),
             TextFormField(
               style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               controller: _newPasswordController,
@@ -39,7 +42,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       : 'Минимальная длина пароля: 6 символов'),
               obscureText: true,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextFormField(
               style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               controller: _confirmPasswordController,
@@ -52,7 +55,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       : 'Минимальная длина пароля: 6 символов'),
               obscureText: true,
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, // цвет текста
@@ -81,11 +84,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Ошибка'),
-                        content: Text('Подтверждение пароля не совпадает.'),
+                        title: const Text('Ошибка'),
+                        content:
+                            const Text('Подтверждение пароля не совпадает.'),
                         actions: [
                           ElevatedButton(
-                            child: Text('OK'),
+                            child: const Text('OK'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -96,7 +100,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   );
                 }
               },
-              child: Text('Сменить пароль'),
+              child: const Text('Сменить пароль'),
             ),
           ],
         ),

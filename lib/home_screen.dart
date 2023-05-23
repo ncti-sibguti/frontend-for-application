@@ -136,11 +136,11 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.calendar_month_outlined),
+                leading: const Icon(Icons.calendar_month_outlined),
                 title: Text('Календарь',
                     style: Theme.of(context).textTheme.bodyMedium),
                 onTap: () {
-                  AutoRouter.of(context).push(CalendarRoute());
+                  AutoRouter.of(context).push(const CalendarRoute());
                 },
               ),
               ListTile(
