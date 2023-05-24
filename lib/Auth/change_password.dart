@@ -31,12 +31,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           children: [
             const SizedBox(height: 150.0),
             TextFormField(
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+              style: TextStyle(color: Theme.of(context).colorScheme.background),
               controller: _newPasswordController,
               decoration: InputDecoration(
                   labelText: 'Новый пароль',
-                  labelStyle:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.background),
                   errorText: _isPasswordValid
                       ? null
                       : 'Минимальная длина пароля: 6 символов'),
@@ -44,12 +44,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             ),
             const SizedBox(height: 16.0),
             TextFormField(
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+              style: TextStyle(color: Theme.of(context).colorScheme.background),
               controller: _confirmPasswordController,
               decoration: InputDecoration(
                   labelText: 'Подтвердите новый пароль',
-                  labelStyle:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.background),
                   errorText: _isPasswordValid
                       ? null
                       : 'Минимальная длина пароля: 6 символов'),

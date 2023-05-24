@@ -23,6 +23,14 @@ class _SchedulePageState extends State<SchedulePage> {
     getSched();
   }
 
+  @override
+  void didUpdateWidget(SchedulePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    getSched();
+  }
+
+  bool _isFetchingSchedule = false;
+
   static List<String> lessonsOfWeek = [
     "Понедельник",
     "Вторник",
@@ -50,9 +58,7 @@ class _SchedulePageState extends State<SchedulePage> {
         setState(() {
           role = authorities;
         });
-
         // Получение расписания
-
         if (authorities.contains('ROLE_STUDENT')) {
           GetScheduleRepositories().getStudentSchedule().then((data) {
             setState(() {
@@ -72,6 +78,13 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
+  Future<void> _refreshSchedule() async {
+    setState(() {
+      _isFetchingSchedule = true;
+    });
+    getSched();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -83,18 +96,13 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
       );
     } else {
-      if (role.contains('ROLE_TEACHER')) {
-        return TeacherDayWidget(
-          dataJson: dataJson,
-        );
-      } else if (role.contains('ROLE_STUDENT')) {
-        return StudentDayWidget(dataJson: dataJson);
-      } else {
-        return const Scaffold(
-            body: Center(
-          child: Text('Произошла ошибка'),
-        ));
-      }
+      return role.contains('ROLE_TEACHER')
+          ? RefreshIndicator(
+              onRefresh: _refreshSchedule,
+              child: TeacherDayWidget(dataJson: dataJson))
+          : RefreshIndicator(
+              onRefresh: _refreshSchedule,
+              child: StudentDayWidget(dataJson: dataJson));
     }
   }
 }

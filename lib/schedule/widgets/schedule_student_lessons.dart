@@ -6,7 +6,6 @@ import '../models/student_schedule.dart';
 class StudentDayWidget extends StatefulWidget {
   const StudentDayWidget({super.key, required this.dataJson});
 
-  // final TeacherLesson lesson;
   final dynamic dataJson;
 
   @override

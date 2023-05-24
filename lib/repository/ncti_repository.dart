@@ -8,9 +8,9 @@ import 'package:ncti/schedule/models/teacher_schedule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+//94.154.11.150
 
-//192.168.1.122
-const String SERVER = 'http://192.168.49.192:8080/api';
+const String SERVER = 'http://94.154.11.150:8080/api';
 const String WEBSERVER = 'ws://25.28.126.117:8080/api';
 
 class LoginRepositories {
@@ -66,7 +66,6 @@ class LoginRepositories {
     passwordController.clear();
 
     if (response.statusCode == 200) {
-      debugPrint('изменился');
       return true;
     }
   }
@@ -159,6 +158,7 @@ class GetScheduleRepositories {
     if (response.statusCode == 200) {
       final responseBody = utf8.decode(response.bodyBytes);
       final jsonData = deserializeStudentLessons(responseBody);
+      debugPrint(jsonData.toString());
       return jsonData;
     } else {
       throw Exception('Failed to load student schedule');
@@ -176,6 +176,7 @@ class GetScheduleRepositories {
     if (response.statusCode == 200) {
       final responseBody = utf8.decode(response.bodyBytes);
       final jsonData = deserializeTeacherLessons(responseBody);
+
       return jsonData;
     } else {
       throw Exception('Failed to teacher student schedule');
@@ -298,7 +299,21 @@ class GetChat {
         'Authorization': 'Bearer $accessToken'
       },
     );
-    debugPrint(response.body);
+  }
+
+  Future deleteChat(String chatId) async {
+    String? accessToken = await GetToken().getAccessToken();
+    final url = Uri.parse('$SERVER/chats/$chatId/logout');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      },
+    );
+    if (response.statusCode == 200) {
+      return true;
+    }
   }
 }
 

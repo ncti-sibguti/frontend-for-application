@@ -31,7 +31,6 @@ class _PublicChatPageState extends State<PublicChatPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     GetChat().getMessages(widget.chatId).then((value) {
       setState(() {
@@ -48,6 +47,28 @@ class _PublicChatPageState extends State<PublicChatPage> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
+              actions: [
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    icon: Icon(Icons.more_vert),
+                    onChanged: (value) {
+                      if (value == 'Выход из чата') {
+                        GetChat().deleteChat(widget.chatId);
+                      }
+                    },
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: 'Выход из чата',
+                        child: Text(
+                          'Выход из чата',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               backgroundColor: Theme.of(context).colorScheme.secondary,
               title: Text(widget.group.name),
             ),

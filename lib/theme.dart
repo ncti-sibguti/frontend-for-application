@@ -13,7 +13,7 @@ class AppTheme {
     textTheme: const TextTheme(
         bodyMedium: TextStyle(color: Color.fromRGBO(65, 45, 166, 1)),
         bodyLarge: TextStyle(color: Color.fromRGBO(241, 246, 252, 1)),
-        labelLarge: TextStyle(color: Color.fromRGBO(201, 214, 223, 1)),
+        labelLarge: TextStyle(color: Color.fromRGBO(241, 246, 252, 1)),
         labelMedium: TextStyle(color: Color.fromRGBO(201, 214, 223, 1)),
         titleLarge: TextStyle(color: Color.fromRGBO(65, 45, 166, 1)),
         displayLarge: TextStyle(color: Color.fromRGBO(241, 246, 252, 1))),

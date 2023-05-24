@@ -12,37 +12,40 @@ class TeacherLessonWidget extends StatelessWidget {
     {
       return Card(
         color: Theme.of(context).cardColor,
-        child: Row(
-          children: [
-            SizedBox(
-              // padding: EdgeInsets.all(10),
-              width: 40,
-              child: Center(
-                child: Text(
-                  lesson.numberPair.toString(),
-                  style: Theme.of(context).textTheme.displayLarge,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              SizedBox(
+                // padding: EdgeInsets.all(10),
+                width: 40,
+                child: Center(
+                  child: Text(
+                    lesson.numberPair.toString(),
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: 10),
-                child: ListTile(
-                  title: Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      lesson.subject,
-                      style: Theme.of(context).textTheme.labelLarge,
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: ListTile(
+                    title: Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        lesson.subject,
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Группы ${lesson.groups.join(',')} \n${lesson.classroom}',
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
                   ),
-                  subtitle: Text(
-                    'Группы ${lesson.groups.join(',')} \n${lesson.classroom}',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       );
     }
