@@ -81,8 +81,7 @@ class _ChatPageState extends State<ChatPage> {
       body: RefreshIndicator(
         onRefresh: _refreshChatList,
         child: ListView.builder(
-          shrinkWrap: true,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           itemCount: chats.length + 1,
           itemBuilder: (context, index) {
@@ -121,12 +120,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildLoaderIndicator() {
-    return _isFetchingChats
-        ? Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(child: CircularProgressIndicator()),
-          )
-        : Container();
+    return _isFetchingChats ? Container() : Container();
   }
 
   void _openCreateGroupChatModal(BuildContext context) {

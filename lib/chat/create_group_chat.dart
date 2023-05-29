@@ -92,6 +92,8 @@ class _CreateGroupChatModalState extends State<CreateGroupChatModal> {
             MultiSelectDialogField(
               searchable: true,
               searchHint: 'Поиск',
+              searchTextStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.background),
               confirmText: Text(
                 'Подтвердить',
                 style:

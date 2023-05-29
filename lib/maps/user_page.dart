@@ -12,6 +12,7 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('В разработке')));
+    return const Scaffold(
+        body: Center(child: Text('В разработке (в долгой разработке)')));
   }
 }

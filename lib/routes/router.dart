@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/schedule/schedule_page.dart';
 import 'package:ncti/maps/user_page.dart';
-import 'package:ncti/calendar/calendar.dart';
+import 'package:ncti/drawer/calendar/calendar.dart';
 import 'package:ncti/chat/chats_page.dart';
 import 'package:ncti/chat/public_chat_page.dart';
 import 'package:ncti/chat/private_chat_page.dart';
-import 'package:ncti/Auth/change_password.dart';
+import 'package:ncti/drawer/change_password.dart';
+import 'package:ncti/drawer/time_schedule.dart';
 
 import 'package:ncti/Auth/login_page.dart';
+import 'package:ncti/schedule/widgets/button_page.dart';
+import 'package:ncti/schedule/group_lesson.dart';
 
 import 'package:ncti/home_screen.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:ncti/schedule/student_lesson_details.dart';
+
+import '../schedule/models/student_schedule.dart';
 
 part 'router.gr.dart';
 
@@ -38,11 +44,18 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
           AutoRoute(page: UserRoute.page),
           AutoRoute(page: ChatRoute.page),
         ]),
+//schedule
+        AutoRoute(page: StudentLessonDetailsRoute.page),
+        AutoRoute(page: ButtonRoute.page),
+        AutoRoute(page: GroupLessonsRoute.page),
+
+        //chat
         AutoRoute(page: PublicChatRoute.page),
         AutoRoute(page: PersonalyChatRoute.page),
         //drawer
         AutoRoute(page: CalendarRoute.page),
         AutoRoute(page: ChangePasswordRoute.page),
         AutoRoute(page: LoginRoute.page),
+        AutoRoute(page: TimeScheduleRoute.page)
       ];
 }

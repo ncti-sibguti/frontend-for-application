@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 //94.154.11.150
 
-const String SERVER = 'http://94.154.11.150:8080/api';
+const String SERVER = 'http://25.28.126.117:8080/api';
 const String WEBSERVER = 'ws://25.28.126.117:8080/api';
 
 class LoginRepositories {
@@ -182,6 +182,25 @@ class GetScheduleRepositories {
       throw Exception('Failed to teacher student schedule');
     }
   }
+
+  Future getScheduleGroup(String groupId) async {
+    String? accessToken = await GetToken().getAccessToken();
+
+    String url = "$SERVER/user/groups/$groupId";
+    final response = await http.get(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    });
+    if (response.statusCode == 200) {
+      final responseBody = utf8.decode(response.bodyBytes);
+
+      final jsonData = deserializeStudentLessons(responseBody);
+
+      return jsonData;
+    } else {
+      throw Exception('Failed to  student schedule');
+    }
+  }
 }
 
 class GetUser {
@@ -234,6 +253,41 @@ class GetUser {
       throw Exception('Failed to load all user');
     }
   }
+
+  Future getAllGroup() async {
+    String? accessToken = await GetToken().getAccessToken();
+    String url = "$SERVER/user/groups";
+    final response = await http.get(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    });
+
+    if (response.statusCode == 200) {
+      final responseBody = utf8.decode(response.bodyBytes);
+
+      List<dynamic> jsonList = jsonDecode(responseBody);
+      List<ScheduleGroup> scheduleGroup =
+          jsonList.map((json) => ScheduleGroup.fromJson(json)).toList();
+
+      return scheduleGroup;
+    } else {
+      throw Exception('Failed to load all group');
+    }
+  }
+}
+
+class ScheduleGroup {
+  int id;
+  String name;
+
+  ScheduleGroup({required this.id, required this.name});
+
+  factory ScheduleGroup.fromJson(Map<String, dynamic> json) {
+    return ScheduleGroup(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
 }
 
 class GetChat {
@@ -272,21 +326,21 @@ class GetChat {
     }
   }
 
-  Future postMessage(String text, String chatId) async {
-    String? accessToken = await GetToken().getAccessToken();
-    final url = Uri.parse('$SERVER/chats/$chatId');
-    final response = await http.post(
-      url,
-      body: jsonEncode({"text": text}),
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': 'Bearer $accessToken'
-      },
-    );
-    if (response.statusCode == 200) {
-      return true;
-    }
-  }
+  // Future postMessage(String text, String chatId) async {
+  //   String? accessToken = await GetToken().getAccessToken();
+  //   final url = Uri.parse('$SERVER/chats/$chatId');
+  //   final response = await http.post(
+  //     url,
+  //     body: jsonEncode({"text": text}),
+  //     headers: {
+  //       'Content-type': 'application/json',
+  //       'Authorization': 'Bearer $accessToken'
+  //     },
+  //   );
+  //   if (response.statusCode == 200) {
+  //     return true;
+  //   }
+  // }
 
   Future createChat(String name, List<int> selectedUser) async {
     String? accessToken = await GetToken().getAccessToken();

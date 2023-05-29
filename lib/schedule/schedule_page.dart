@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:ncti/repository/ncti_repository.dart';
+import 'package:ncti/routes/router.dart';
 
 import 'package:ncti/schedule/widgets/schedule_student_lessons.dart';
 import 'package:ncti/schedule/widgets/schedule_teacher_lessons.dart';
@@ -28,8 +30,6 @@ class _SchedulePageState extends State<SchedulePage> {
     super.didUpdateWidget(oldWidget);
     getSched();
   }
-
-  bool _isFetchingSchedule = false;
 
   static List<String> lessonsOfWeek = [
     "Понедельник",
@@ -79,30 +79,52 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   Future<void> _refreshSchedule() async {
-    setState(() {
-      _isFetchingSchedule = true;
-    });
     getSched();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
+    var itemsActionBar = [
+      SpeedDialChild(
+        backgroundColor: Colors.greenAccent,
+        onTap: _refreshSchedule,
+        child: Icon(
+          Icons.refresh,
+          color: Theme.of(context).colorScheme.primary,
         ),
-      );
-    } else {
-      return role.contains('ROLE_TEACHER')
-          ? RefreshIndicator(
-              onRefresh: _refreshSchedule,
-              child: TeacherDayWidget(dataJson: dataJson))
-          : RefreshIndicator(
-              onRefresh: _refreshSchedule,
-              child: StudentDayWidget(dataJson: dataJson));
-    }
+      ),
+      SpeedDialChild(
+        backgroundColor: Colors.indigoAccent,
+        onTap: () {
+          AutoRouter.of(context).push(ButtonRoute());
+        },
+        child: Icon(
+          Icons.group_outlined,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    ];
+
+    return Scaffold(
+        floatingActionButton: SpeedDial(
+          overlayOpacity: 0,
+          icon: Icons.arrow_upward_outlined,
+          activeIcon: Icons.arrow_downward_outlined,
+          foregroundColor: Theme.of(context).colorScheme.primary,
+          children: itemsActionBar,
+        ),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              )
+            : role.contains('ROLE_TEACHER')
+                ? RefreshIndicator(
+                    onRefresh: _refreshSchedule,
+                    child: TeacherDayWidget(dataJson: dataJson))
+                : RefreshIndicator(
+                    onRefresh: _refreshSchedule,
+                    child: StudentDayWidget(dataJson: dataJson)));
   }
 }

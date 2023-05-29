@@ -38,8 +38,6 @@ class _HomePageState extends State<HomePage> {
           authorities.add(role['authority']);
         }
         if (authorities.contains('ROLE_STUDENT')) {
-          // debugPrint('Студент юзер запрос');
-          // debugPrint('Это Студент');
           GetUser().getStudent().then((data) {
             Map<String, dynamic> result = jsonDecode(data);
             setState(() {
@@ -141,6 +139,16 @@ class _HomePageState extends State<HomePage> {
                     style: Theme.of(context).textTheme.bodyMedium),
                 onTap: () {
                   AutoRouter.of(context).push(const CalendarRoute());
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.schedule_outlined),
+                title: Text(
+                  'Расписание звонков',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                onTap: () {
+                  AutoRouter.of(context).push(TimeScheduleRoute());
                 },
               ),
               ListTile(

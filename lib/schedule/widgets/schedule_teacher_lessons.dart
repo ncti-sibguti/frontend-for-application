@@ -107,33 +107,30 @@ class _TeacherDayWidgetState extends State<TeacherDayWidget> {
     List<TeacherLesson> lessons = getLessonsForDay(selectedDay);
 
     if (lessons.isNotEmpty) {
-      return Scaffold(
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 15.0,
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 15.0,
+            ),
+            _buildDaysButtons(),
+            const SizedBox(
+              height: 15.0,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: lessons.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return TeacherLessonWidget(lesson: lessons[index]);
+                },
               ),
-              _buildDaysButtons(),
-              const SizedBox(
-                height: 15.0,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: lessons.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return TeacherLessonWidget(lesson: lessons[index]);
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     } else {
-      return Scaffold(
-          body: Container(
+      return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
@@ -151,7 +148,7 @@ class _TeacherDayWidgetState extends State<TeacherDayWidget> {
             )),
           ],
         ),
-      ));
+      );
     }
   }
 }

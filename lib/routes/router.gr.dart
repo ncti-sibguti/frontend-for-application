@@ -21,12 +21,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const LoginPage(),
       );
     },
-    CalendarRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CalendarPage(),
-      );
-    },
     ChatRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -57,6 +51,24 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    CalendarRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CalendarPage(),
+      );
+    },
+    ChangePasswordRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ChangePasswordPage(),
+      );
+    },
+    TimeScheduleRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const TimeSchedulePage(),
+      );
+    },
     HomeRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -75,10 +87,24 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const SchedulePage(),
       );
     },
-    ChangePasswordRoute.name: (routeData) {
+    StudentLessonDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<StudentLessonDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: ChangePasswordPage(),
+        child: StudentLessonDetailsPage(lesson: args.lesson),
+      );
+    },
+    ButtonRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ButtonPage(),
+      );
+    },
+    GroupLessonsRoute.name: (routeData) {
+      final args = routeData.argsAs<GroupLessonsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: GroupLessonsPage(group: args.group),
       );
     },
   };
@@ -94,20 +120,6 @@ class LoginRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'LoginRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [CalendarPage]
-class CalendarRoute extends PageRouteInfo<void> {
-  const CalendarRoute({List<PageRouteInfo>? children})
-      : super(
-          CalendarRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CalendarRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -225,6 +237,48 @@ class PublicChatRouteArgs {
 }
 
 /// generated route for
+/// [CalendarPage]
+class CalendarRoute extends PageRouteInfo<void> {
+  const CalendarRoute({List<PageRouteInfo>? children})
+      : super(
+          CalendarRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ChangePasswordPage]
+class ChangePasswordRoute extends PageRouteInfo<void> {
+  const ChangePasswordRoute({List<PageRouteInfo>? children})
+      : super(
+          ChangePasswordRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ChangePasswordRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [TimeSchedulePage]
+class TimeScheduleRoute extends PageRouteInfo<void> {
+  const TimeScheduleRoute({List<PageRouteInfo>? children})
+      : super(
+          TimeScheduleRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'TimeScheduleRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [HomePage]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})
@@ -267,15 +321,74 @@ class ScheduleRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [ChangePasswordPage]
-class ChangePasswordRoute extends PageRouteInfo<void> {
-  const ChangePasswordRoute({List<PageRouteInfo>? children})
-      : super(
-          ChangePasswordRoute.name,
+/// [StudentLessonDetailsPage]
+class StudentLessonDetailsRoute
+    extends PageRouteInfo<StudentLessonDetailsRouteArgs> {
+  StudentLessonDetailsRoute({
+    required StudentLesson lesson,
+    List<PageRouteInfo>? children,
+  }) : super(
+          StudentLessonDetailsRoute.name,
+          args: StudentLessonDetailsRouteArgs(lesson: lesson),
           initialChildren: children,
         );
 
-  static const String name = 'ChangePasswordRoute';
+  static const String name = 'StudentLessonDetailsRoute';
+
+  static const PageInfo<StudentLessonDetailsRouteArgs> page =
+      PageInfo<StudentLessonDetailsRouteArgs>(name);
+}
+
+class StudentLessonDetailsRouteArgs {
+  const StudentLessonDetailsRouteArgs({required this.lesson});
+
+  final StudentLesson lesson;
+
+  @override
+  String toString() {
+    return 'StudentLessonDetailsRouteArgs{lesson: $lesson}';
+  }
+}
+
+/// generated route for
+/// [ButtonPage]
+class ButtonRoute extends PageRouteInfo<void> {
+  const ButtonRoute({List<PageRouteInfo>? children})
+      : super(
+          ButtonRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ButtonRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [GroupLessonsPage]
+class GroupLessonsRoute extends PageRouteInfo<GroupLessonsRouteArgs> {
+  GroupLessonsRoute({
+    required ScheduleGroup group,
+    List<PageRouteInfo>? children,
+  }) : super(
+          GroupLessonsRoute.name,
+          args: GroupLessonsRouteArgs(group: group),
+          initialChildren: children,
+        );
+
+  static const String name = 'GroupLessonsRoute';
+
+  static const PageInfo<GroupLessonsRouteArgs> page =
+      PageInfo<GroupLessonsRouteArgs>(name);
+}
+
+class GroupLessonsRouteArgs {
+  const GroupLessonsRouteArgs({required this.group});
+
+  final ScheduleGroup group;
+
+  @override
+  String toString() {
+    return 'GroupLessonsRouteArgs{group: $group}';
+  }
 }

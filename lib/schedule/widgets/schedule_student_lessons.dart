@@ -29,37 +29,37 @@ class _StudentDayWidgetState extends State<StudentDayWidget> {
     switch (day) {
       case 'Понедельник':
         if (widget.dataJson.containsKey('Понедельник')) {
-          return widget.dataJson['Понедельник']!;
+          return widget.dataJson['Понедельник'];
         } else {
           return [];
         }
       case 'Вторник':
         if (widget.dataJson.containsKey('Вторник')) {
-          return widget.dataJson['Вторник']!;
+          return widget.dataJson['Вторник'];
         } else {
           return [];
         }
       case 'Среда':
         if (widget.dataJson.containsKey('Среда')) {
-          return widget.dataJson['Среда']!;
+          return widget.dataJson['Среда'];
         } else {
           return [];
         }
       case 'Четверг':
         if (widget.dataJson.containsKey('Четверг')) {
-          return widget.dataJson['Четверг']!;
+          return widget.dataJson['Четверг'];
         } else {
           return [];
         }
       case 'Пятница':
         if (widget.dataJson.containsKey('Пятница')) {
-          return widget.dataJson['Пятница']!;
+          return widget.dataJson['Пятница'];
         } else {
           return [];
         }
       case 'Суббота':
         if (widget.dataJson.containsKey('Суббота')) {
-          return widget.dataJson['Суббота']!;
+          return widget.dataJson['Суббота'];
         } else {
           return [];
         }
@@ -106,33 +106,30 @@ class _StudentDayWidgetState extends State<StudentDayWidget> {
     List<StudentLesson> lessons = getLessonsForDay(selectedDay);
 
     if (lessons.isNotEmpty) {
-      return Scaffold(
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 15.0,
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 15.0,
+            ),
+            _buildDaysButtons(),
+            const SizedBox(
+              height: 15.0,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: lessons.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return StudentLessonWidget(lesson: lessons[index]);
+                },
               ),
-              _buildDaysButtons(),
-              const SizedBox(
-                height: 15.0,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: lessons.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return StudentLessonWidget(lesson: lessons[index]);
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     } else {
-      return Scaffold(
-          body: Container(
+      return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
@@ -150,7 +147,7 @@ class _StudentDayWidgetState extends State<StudentDayWidget> {
             )),
           ],
         ),
-      ));
+      );
     }
   }
 }

@@ -73,8 +73,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 if (newPassword.length >= 6 && newPassword == confirmPassword) {
                   LoginRepositories()
                       .changePassword(_confirmPasswordController);
-                  // Выполнение смены пароля
-                  // TODO: Добавьте код для выполнения смены пароля
                 } else {
                   setState(() {
                     _isPasswordValid = false;
@@ -84,12 +82,22 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: const Text('Ошибка'),
-                        content:
-                            const Text('Подтверждение пароля не совпадает.'),
+                        title: Text('Ошибка',
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.secondary)),
+                        content: Text(
+                          'Подтверждение пароля не совпадает.',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
                         actions: [
                           ElevatedButton(
-                            child: const Text('OK'),
+                            child: Text('OK',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background)),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
