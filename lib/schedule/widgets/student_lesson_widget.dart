@@ -18,37 +18,40 @@ class StudentLessonWidget extends StatelessWidget {
             AutoRouter.of(context).push(StudentLessonDetailsRoute(
                 lesson: lesson)); // Действие при нажатии на элемент расписания
           },
-          child: Row(
-            children: [
-              SizedBox(
-                // padding: EdgeInsets.all(10),
-                width: 40,
-                child: Center(
-                  child: Text(
-                    lesson.numberPair.toString(),
-                    style: Theme.of(context).textTheme.displayLarge,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              children: [
+                SizedBox(
+                  // padding: EdgeInsets.all(10),
+                  width: 40,
+                  child: Center(
+                    child: Text(
+                      lesson.numberPair.toString(),
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: ListTile(
-                    title: Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Text(
-                        lesson.subject,
-                        style: Theme.of(context).textTheme.labelLarge,
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: ListTile(
+                      title: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          lesson.subject,
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${lesson.teachers.map((e) => '${e.lastname} ${e.firstname} ${e.surname}').join(', \n')} \n${lesson.classroom}',
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
-                    subtitle: Text(
-                      '${lesson.teacher.lastname} ${lesson.teacher.firstname} ${lesson.teacher.surname}\n${lesson.classroom}',
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ));
   }

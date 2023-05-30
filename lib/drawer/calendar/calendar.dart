@@ -36,7 +36,6 @@ class _CalendarPageState extends State<CalendarPage> {
         for (final event in events) {
           final date = event.date;
           _events[date] = [..._events[date] ?? [], event];
-          debugPrint(_events[date].toString());
         }
       });
     });

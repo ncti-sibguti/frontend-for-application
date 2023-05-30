@@ -2,19 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:auto_route/annotations.dart';
+import 'package:ncti/repository/ncti_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'models/student_schedule.dart';
+import 'models/teacher_schedule.dart';
 
 @RoutePage()
-class StudentLessonDetailsPage extends StatefulWidget {
-  final StudentLesson lesson;
+class TeacherLessonDetailsPage extends StatefulWidget {
+  final TeacherLesson lesson;
 
-  StudentLessonDetailsPage({required this.lesson});
+  TeacherLessonDetailsPage({required this.lesson});
 
   @override
-  State<StudentLessonDetailsPage> createState() =>
-      _StudentLessonDetailsPageState();
+  State<TeacherLessonDetailsPage> createState() =>
+      _TeacherLessonDetailsPageState();
 }
 
 class Note {
@@ -35,8 +36,9 @@ class Note {
   }
 }
 
-class _StudentLessonDetailsPageState extends State<StudentLessonDetailsPage> {
+class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
   List<Note> savedNotes = [];
+  final TextEditingController _classroomController = TextEditingController();
   String newNote = '';
   @override
   void initState() {
@@ -73,17 +75,22 @@ class _StudentLessonDetailsPageState extends State<StudentLessonDetailsPage> {
               ),
               const SizedBox(height: 16.0),
               Text(
-                widget.lesson.teachers
-                    .map((e) => '${e.lastname} ${e.firstname} ${e.surname}')
-                    .join(', \n'),
+                widget.lesson.groups.join(', '),
                 style: TextStyle(
                     fontSize: 16.0,
                     color: Theme.of(context).colorScheme.secondary),
               ),
               const SizedBox(height: 16.0),
-              Text(
-                'Аудитория: ${widget.lesson.classroom}',
-                style: const TextStyle(fontSize: 18),
+              Row(
+                children: [
+                  Text(
+                    'Аудитория: ${widget.lesson.classroom}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  // IconButton(
+                  //     onPressed: () => _editClassroom(context),
+                  //     icon: Icon(Icons.edit_outlined))
+                ],
               ),
               const SizedBox(height: 16.0),
               getScheduleItemByNumberPair(context, widget.lesson.numberPair),
@@ -263,5 +270,63 @@ class _StudentLessonDetailsPageState extends State<StudentLessonDetailsPage> {
       default:
         return Container();
     }
+  }
+
+  void _editClassroom(BuildContext context) {
+    String classroom = widget.lesson.classroom;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String newClassroom =
+            classroom; // Создайте новую переменную для изменяемого значения кабинета
+
+        return AlertDialog(
+          title: Text('Изменить кабинет'),
+          content: TextField(
+            controller: _classroomController,
+            style: TextStyle(color: Theme.of(context).colorScheme.background),
+            onChanged: (value) {
+              newClassroom =
+                  value; // Обновление нового значения кабинета при вводе в TextField
+            },
+            decoration: InputDecoration(
+              hintText: 'Введите новый кабинет...',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Отмена',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.background),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                setState(() {
+                  classroom =
+                      newClassroom; // Обновление значения кабинета после сохранения
+                });
+                debugPrint(classroom);
+                GetScheduleRepositories().editClassroom(
+                    widget.lesson.groups,
+                    widget.lesson.subject,
+                    widget.lesson.numberPair,
+                    _classroomController);
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Сохранить',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.background),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:ncti/chat/add_user_chat.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -12,8 +13,6 @@ import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:uuid/uuid.dart';
-
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 @RoutePage()
 class PublicChatPage extends StatefulWidget {
@@ -34,20 +33,11 @@ class PublicChatPage extends StatefulWidget {
 
 class _PublicChatPageState extends State<PublicChatPage> {
   List<types.Message> _messages = [];
-  WebSocketChannel? _channel;
+
   StompClient? stompClient;
   String? accessToken;
   bool isLoading = true;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   GetChat().getMessages(widget.chatId).then((value) {
-  //     setState(() {
-  //       _messages = value;
-  //     });
-  //   });
-  // }
   @override
   void initState() {
     super.initState();
@@ -68,16 +58,16 @@ class _PublicChatPageState extends State<PublicChatPage> {
   void connectToWebSocket() async {
     stompClient = StompClient(
       config: StompConfig.SockJS(
-        url: 'http://25.28.126.117:8080/api/ws',
+        url: 'http://94.154.11.150:8080/api/ws',
         onConnect: (StompFrame connectFrame) {
           setState(() {
             isLoading = false;
           });
-          print('Connected to WebSocket');
+          debugPrint('Connected to WebSocket');
           subscribeToChatTopic();
         },
         onWebSocketError: (dynamic error) {
-          print('WebSocket error: $error');
+          debugPrint('WebSocket error: $error');
         },
       ),
     );
@@ -94,15 +84,6 @@ class _PublicChatPageState extends State<PublicChatPage> {
       destination: '/topic/chats/${widget.chatId}',
       callback: (StompFrame frame) {
         final messages = types.TextMessage.fromJson(jsonDecode(frame.body!));
-
-        // final message = types.TextMessage(
-        //     id: frame.headers['messageId']!,
-        //     text: frame.body!,
-        //     createdAt: DateTime.now().millisecondsSinceEpoch,
-        //     author: types.User(id: widget.id.toString()));
-
-        // debugPrint(_messages.toString());
-
         setState(() {
           _messages.insert(0, messages);
         });
@@ -119,10 +100,13 @@ class _PublicChatPageState extends State<PublicChatPage> {
           actions: [
             DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                icon: Icon(Icons.more_horiz_outlined),
+                icon: const Icon(Icons.more_horiz_outlined),
                 onChanged: (value) {
                   if (value == 'Выход из чата') {
                     GetChat().deleteChat(widget.chatId);
+                  }
+                  if (value == 'Добавить участников') {
+                    _openAddGroupChatModal(context);
                   }
                 },
                 items: [
@@ -131,7 +115,15 @@ class _PublicChatPageState extends State<PublicChatPage> {
                     child: Text(
                       'Выход из чата',
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
+                          color: Theme.of(context).colorScheme.background),
+                    ),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'Добавить участников',
+                    child: Text(
+                      'Добавить участников',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.background),
                     ),
                   ),
                 ],
@@ -142,7 +134,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
           title: Text(widget.group.name),
         ),
         body: isLoading
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : SizedBox(
@@ -163,13 +155,13 @@ class _PublicChatPageState extends State<PublicChatPage> {
   }
 
   void _sendMessage(types.PartialText message) {
-    final user = types.User(id: widget.id);
-    final textMessage = types.TextMessage(
-      id: const Uuid().v4(),
-      text: message.text,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      author: user,
-    );
+    // final user = types.User(id: widget.id);
+    // final textMessage = types.TextMessage(
+    //   id: const Uuid().v4(),
+    //   text: message.text,
+    //   createdAt: DateTime.now().millisecondsSinceEpoch,
+    //   author: user,
+    // );
 
     stompClient?.send(
       destination: '/chats/${widget.chatId}',
@@ -178,5 +170,16 @@ class _PublicChatPageState extends State<PublicChatPage> {
     );
 
     // GetChat().postMessage(textMessage.text, widget.chatId);
+  }
+
+  void _openAddGroupChatModal(BuildContext context) {
+    showModalBottomSheet(
+      useSafeArea: true,
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return AddUserChat(chatId: widget.chatId);
+      },
+    );
   }
 }

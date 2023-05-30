@@ -16,8 +16,10 @@ import 'package:ncti/schedule/group_lesson.dart';
 import 'package:ncti/home_screen.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:ncti/schedule/student_lesson_details.dart';
+import 'package:ncti/schedule/teacher_lesson_details.dart';
 
 import '../schedule/models/student_schedule.dart';
+import '../schedule/models/teacher_schedule.dart';
 
 part 'router.gr.dart';
 
@@ -46,6 +48,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         ]),
 //schedule
         AutoRoute(page: StudentLessonDetailsRoute.page),
+        AutoRoute(page: TeacherLessonDetailsRoute.page),
         AutoRoute(page: ButtonRoute.page),
         AutoRoute(page: GroupLessonsRoute.page),
 

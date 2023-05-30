@@ -30,17 +30,35 @@ class _ButtonPageState extends State<ButtonPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text('Список групп'),
       ),
-      body: ListView(
-        children: groups.map((group) {
-          return ElevatedButton(
-            child: Text(group.name),
-            onPressed: () {
-              AutoRouter.of(context).push(GroupLessonsRoute(group: group));
-            },
-          );
-        }).toList(),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: GridView.count(
+          crossAxisCount: 4, // Количество колонок
+          children: groups.map((group) {
+            return Padding(
+              padding: EdgeInsets.all(8.0), // Отступы между кнопками
+              child: TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context)
+                          .colorScheme
+                          .secondary), // Цвет фона кнопки
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context)
+                          .colorScheme
+                          .primary), // Цвет текста кнопки
+                ),
+                onPressed: () {
+                  AutoRouter.of(context).push(GroupLessonsRoute(group: group));
+                },
+                child: Text(group.name),
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }

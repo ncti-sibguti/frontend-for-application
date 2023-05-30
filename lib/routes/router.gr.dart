@@ -107,6 +107,13 @@ abstract class _$AppRouter extends RootStackRouter {
         child: GroupLessonsPage(group: args.group),
       );
     },
+    TeacherLessonDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<TeacherLessonDetailsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: TeacherLessonDetailsPage(lesson: args.lesson),
+      );
+    },
   };
 }
 
@@ -390,5 +397,35 @@ class GroupLessonsRouteArgs {
   @override
   String toString() {
     return 'GroupLessonsRouteArgs{group: $group}';
+  }
+}
+
+/// generated route for
+/// [TeacherLessonDetailsPage]
+class TeacherLessonDetailsRoute
+    extends PageRouteInfo<TeacherLessonDetailsRouteArgs> {
+  TeacherLessonDetailsRoute({
+    required TeacherLesson lesson,
+    List<PageRouteInfo>? children,
+  }) : super(
+          TeacherLessonDetailsRoute.name,
+          args: TeacherLessonDetailsRouteArgs(lesson: lesson),
+          initialChildren: children,
+        );
+
+  static const String name = 'TeacherLessonDetailsRoute';
+
+  static const PageInfo<TeacherLessonDetailsRouteArgs> page =
+      PageInfo<TeacherLessonDetailsRouteArgs>(name);
+}
+
+class TeacherLessonDetailsRouteArgs {
+  const TeacherLessonDetailsRouteArgs({required this.lesson});
+
+  final TeacherLesson lesson;
+
+  @override
+  String toString() {
+    return 'TeacherLessonDetailsRouteArgs{lesson: $lesson}';
   }
 }

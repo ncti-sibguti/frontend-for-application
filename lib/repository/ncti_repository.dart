@@ -10,8 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 //94.154.11.150
 
-const String SERVER = 'http://25.28.126.117:8080/api';
-const String WEBSERVER = 'ws://25.28.126.117:8080/api';
+const String SERVER = 'http://94.154.11.150:8080/api';
 
 class LoginRepositories {
   Future<bool> login(TextEditingController usernameController,
@@ -157,8 +156,9 @@ class GetScheduleRepositories {
     });
     if (response.statusCode == 200) {
       final responseBody = utf8.decode(response.bodyBytes);
+
       final jsonData = deserializeStudentLessons(responseBody);
-      debugPrint(jsonData.toString());
+
       return jsonData;
     } else {
       throw Exception('Failed to load student schedule');
@@ -200,6 +200,27 @@ class GetScheduleRepositories {
     } else {
       throw Exception('Failed to  student schedule');
     }
+  }
+
+  Future editClassroom(List<String> group, String subject, int numberPair,
+      TextEditingController controller) async {
+    String classroom = controller.text;
+    String? accessToken = await GetToken().getAccessToken();
+
+    String url = "$SERVER/teacher/change-schedule";
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-type': 'application/json',
+      },
+      body: jsonEncode({
+        "group": group,
+        "subject": subject,
+        "numberPair": numberPair,
+        "classroom": classroom
+      }),
+    );
   }
 }
 
@@ -326,22 +347,6 @@ class GetChat {
     }
   }
 
-  // Future postMessage(String text, String chatId) async {
-  //   String? accessToken = await GetToken().getAccessToken();
-  //   final url = Uri.parse('$SERVER/chats/$chatId');
-  //   final response = await http.post(
-  //     url,
-  //     body: jsonEncode({"text": text}),
-  //     headers: {
-  //       'Content-type': 'application/json',
-  //       'Authorization': 'Bearer $accessToken'
-  //     },
-  //   );
-  //   if (response.statusCode == 200) {
-  //     return true;
-  //   }
-  // }
-
   Future createChat(String name, List<int> selectedUser) async {
     String? accessToken = await GetToken().getAccessToken();
     final url = Uri.parse('$SERVER/chats/create/');
@@ -355,7 +360,9 @@ class GetChat {
     );
   }
 
-  Future deleteChat(String chatId) async {
+  Future deleteChat(
+    String chatId,
+  ) async {
     String? accessToken = await GetToken().getAccessToken();
     final url = Uri.parse('$SERVER/chats/$chatId/logout');
     final response = await http.post(
@@ -368,6 +375,18 @@ class GetChat {
     if (response.statusCode == 200) {
       return true;
     }
+  }
+
+  Future addUserToChat(String chatId, List<int> selectedIds) async {
+    String? accessToken = await GetToken().getAccessToken();
+    final url = Uri.parse('$SERVER/chats/$chatId');
+    final response = await http.post(url,
+        body: jsonEncode({"ids": selectedIds}),
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        });
+    debugPrint(response.body);
   }
 }
 

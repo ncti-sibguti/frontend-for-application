@@ -1,47 +1,63 @@
 import 'dart:convert';
 
+class StudentLesson {
+  String day;
+  int numberPair;
+  String subject;
+  List<Teacher> teachers;
+  String classroom;
+
+  StudentLesson(
+      {required this.day,
+      required this.numberPair,
+      required this.subject,
+      required this.teachers,
+      required this.classroom});
+
+  factory StudentLesson.fromJson(Map<String, dynamic> json) {
+    var teacherList = json['teachers'] as List;
+    List<Teacher> teachers =
+        teacherList.map((teacher) => Teacher.fromJson(teacher)).toList();
+
+    // var classroomList = json['classroom'] as List;
+    // List<Classroom> classrooms = classroomList
+    //     .map((classroom) => Classroom.fromJson(classroom))
+    //     .toList();
+
+    return StudentLesson(
+      day: json['day'],
+      numberPair: json['numberPair'],
+      subject: json['subject'],
+      teachers: teachers,
+      classroom: json['classroom'],
+    );
+  }
+}
+
+class Classroom {
+  String name;
+
+  Classroom({required this.name});
+  factory Classroom.fromJson(Map<String, dynamic> json) {
+    return Classroom(
+      name: json['name'],
+    );
+  }
+}
+
 class Teacher {
   String firstname;
   String lastname;
   String surname;
 
-  Teacher({
-    required this.firstname,
-    required this.lastname,
-    required this.surname,
-  });
+  Teacher(
+      {required this.firstname, required this.lastname, required this.surname});
 
   factory Teacher.fromJson(Map<String, dynamic> json) {
     return Teacher(
       firstname: json['firstname'],
       lastname: json['lastname'],
       surname: json['surname'],
-    );
-  }
-}
-
-class StudentLesson {
-  String day;
-  int numberPair;
-  Teacher teacher;
-  String subject;
-  String classroom;
-
-  StudentLesson({
-    required this.day,
-    required this.numberPair,
-    required this.teacher,
-    required this.subject,
-    required this.classroom,
-  });
-
-  factory StudentLesson.fromJson(Map<String, dynamic> json) {
-    return StudentLesson(
-      day: json['day'],
-      numberPair: json['numberPair'],
-      teacher: Teacher.fromJson(json['teacher']),
-      subject: json['subject'],
-      classroom: json['classroom'],
     );
   }
 }
