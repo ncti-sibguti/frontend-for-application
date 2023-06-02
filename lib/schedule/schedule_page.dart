@@ -25,25 +25,9 @@ class _SchedulePageState extends State<SchedulePage> {
     getSched();
   }
 
-  @override
-  void didUpdateWidget(SchedulePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    getSched();
-  }
-
-  static List<String> lessonsOfWeek = [
-    "Понедельник",
-    "Вторник",
-    "Среда",
-    "Четверг",
-    "Пятница",
-    "Суббота"
-  ];
-
   dynamic dataJson = '';
   bool isLoading = true;
   List<String> role = [];
-  String selectedDay = lessonsOfWeek[0];
 
   void getSched() async {
     GetToken().getAccessToken().then((value) {

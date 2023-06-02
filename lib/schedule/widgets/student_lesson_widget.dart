@@ -6,8 +6,10 @@ import '../models/student_schedule.dart';
 
 class StudentLessonWidget extends StatelessWidget {
   final StudentLesson lesson;
+  final DateTime day;
 
-  const StudentLessonWidget({super.key, required this.lesson});
+  const StudentLessonWidget(
+      {super.key, required this.lesson, required this.day});
 
   @override
   Widget build(BuildContext context) {

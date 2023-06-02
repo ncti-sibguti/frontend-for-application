@@ -27,17 +27,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ChatPage(),
       );
     },
-    PersonalyChatRoute.name: (routeData) {
-      final args = routeData.argsAs<PersonalyChatRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: PersonalyChatPage(
-          key: args.key,
-          chatId: args.chatId,
-          user: args.user,
-        ),
-      );
-    },
     PublicChatRoute.name: (routeData) {
       final args = routeData.argsAs<PublicChatRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -143,50 +132,6 @@ class ChatRoute extends PageRouteInfo<void> {
   static const String name = 'ChatRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [PersonalyChatPage]
-class PersonalyChatRoute extends PageRouteInfo<PersonalyChatRouteArgs> {
-  PersonalyChatRoute({
-    Key? key,
-    required int chatId,
-    required User user,
-    List<PageRouteInfo>? children,
-  }) : super(
-          PersonalyChatRoute.name,
-          args: PersonalyChatRouteArgs(
-            key: key,
-            chatId: chatId,
-            user: user,
-          ),
-          rawPathParams: {'chatId': chatId},
-          initialChildren: children,
-        );
-
-  static const String name = 'PersonalyChatRoute';
-
-  static const PageInfo<PersonalyChatRouteArgs> page =
-      PageInfo<PersonalyChatRouteArgs>(name);
-}
-
-class PersonalyChatRouteArgs {
-  const PersonalyChatRouteArgs({
-    this.key,
-    required this.chatId,
-    required this.user,
-  });
-
-  final Key? key;
-
-  final int chatId;
-
-  final User user;
-
-  @override
-  String toString() {
-    return 'PersonalyChatRouteArgs{key: $key, chatId: $chatId, user: $user}';
-  }
 }
 
 /// generated route for

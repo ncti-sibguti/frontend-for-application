@@ -8,8 +8,9 @@ import 'package:ncti/schedule/models/teacher_schedule.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-//94.154.11.150
 
+//94.154.11.150
+//25.28.126.117
 const String SERVER = 'http://94.154.11.150:8080/api';
 
 class LoginRepositories {
@@ -221,6 +222,7 @@ class GetScheduleRepositories {
         "classroom": classroom
       }),
     );
+    return response.body;
   }
 }
 
@@ -358,6 +360,7 @@ class GetChat {
         'Authorization': 'Bearer $accessToken'
       },
     );
+    return response.body;
   }
 
   Future deleteChat(

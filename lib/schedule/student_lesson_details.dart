@@ -61,6 +61,7 @@ class _StudentLessonDetailsPageState extends State<StudentLessonDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text('ГГГГ ММ ДД'),
               Text(
                 '${widget.lesson.numberPair}-я пара',
                 style:
@@ -193,7 +194,6 @@ class _StudentLessonDetailsPageState extends State<StudentLessonDetailsPage> {
   }
 
   void deleteNotes(String subject, Note note) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Note> notes = await loadNotes(subject);
 
     // Загрузка текущего списка заметок

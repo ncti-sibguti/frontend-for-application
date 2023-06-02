@@ -12,7 +12,7 @@ import 'package:ncti/theme.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-import 'package:uuid/uuid.dart';
+import 'package:stomp_dart_client/stomp_handler.dart';
 
 @RoutePage()
 class PublicChatPage extends StatefulWidget {
@@ -34,6 +34,7 @@ class PublicChatPage extends StatefulWidget {
 class _PublicChatPageState extends State<PublicChatPage> {
   List<types.Message> _messages = [];
 
+  StompUnsubscribe? unsubscribe;
   StompClient? stompClient;
   String? accessToken;
   bool isLoading = true;
@@ -49,52 +50,58 @@ class _PublicChatPageState extends State<PublicChatPage> {
     });
   }
 
-  @override
-  void dispose() {
-    disconnectFromWebSocket();
-    super.dispose();
-  }
-
   void connectToWebSocket() async {
+    // String? accessToken = await GetToken().getAccessToken();
+
     stompClient = StompClient(
       config: StompConfig.SockJS(
+        //TODO раскоменти при релизе
+        // stompConnectHeaders: ,
+        // webSocketConnectHeaders: {
+        //   'Content-type': 'application/json',
+        //   'Authorization': 'Bearer $accessToken'
+        // },
         url: 'http://94.154.11.150:8080/api/ws',
         onConnect: (StompFrame connectFrame) {
           setState(() {
             isLoading = false;
           });
           debugPrint('Connected to WebSocket');
-          subscribeToChatTopic();
+          unsubscribe = stompClient!.subscribe(
+            destination: '/topic/chats/${widget.chatId}',
+            callback: (StompFrame frame) {
+              final messages =
+                  types.TextMessage.fromJson(jsonDecode(frame.body!));
+              setState(() {
+                _messages.insert(0, messages);
+              });
+              // Обработка полученного события
+              print(frame.body);
+            },
+          );
         },
         onWebSocketError: (dynamic error) {
-          debugPrint('WebSocket error: $error');
+          debugPrint('WebSocket error: ${error.toString()}');
         },
       ),
     );
-
     stompClient?.activate();
   }
 
-  void disconnectFromWebSocket() {
-    stompClient?.deactivate();
-  }
-
-  void subscribeToChatTopic() {
-    stompClient?.subscribe(
-      destination: '/topic/chats/${widget.chatId}',
-      callback: (StompFrame frame) {
-        final messages = types.TextMessage.fromJson(jsonDecode(frame.body!));
-        setState(() {
-          _messages.insert(0, messages);
-        });
-      },
-    );
-  }
+  // void subscribeToChatTopic() {
+  //   stompClient?.subscribe(
+  //     destination: '/topic/chats/${widget.chatId}',
+  //     callback: (StompFrame frame) {
+  //       final messages = types.TextMessage.fromJson(jsonDecode(frame.body!));
+  //       setState(() {
+  //         _messages.insert(0, messages);
+  //       });
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    // final _user = types.User(id: userId.toString());
-
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -155,21 +162,11 @@ class _PublicChatPageState extends State<PublicChatPage> {
   }
 
   void _sendMessage(types.PartialText message) {
-    // final user = types.User(id: widget.id);
-    // final textMessage = types.TextMessage(
-    //   id: const Uuid().v4(),
-    //   text: message.text,
-    //   createdAt: DateTime.now().millisecondsSinceEpoch,
-    //   author: user,
-    // );
-
     stompClient?.send(
       destination: '/chats/${widget.chatId}',
       body: jsonEncode({"senderId": widget.id, "text": message.text}),
       headers: {},
     );
-
-    // GetChat().postMessage(textMessage.text, widget.chatId);
   }
 
   void _openAddGroupChatModal(BuildContext context) {
@@ -181,5 +178,19 @@ class _PublicChatPageState extends State<PublicChatPage> {
         return AddUserChat(chatId: widget.chatId);
       },
     );
+  }
+
+  @override
+  void dispose() {
+    disconnectFromWebSocket();
+    super.dispose();
+  }
+
+  void disconnectFromWebSocket() {
+    debugPrint('disconnect');
+
+    // Вызов функции отписки
+    unsubscribe!();
+    stompClient?.deactivate();
   }
 }

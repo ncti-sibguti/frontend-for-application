@@ -200,12 +200,10 @@ class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
   }
 
   void deleteNotes(String subject, Note note) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<Note> notes = await loadNotes(subject);
-
-    // Загрузка текущего списка заметок
-    notes.removeWhere((element) => element.note == note.note);
-    // Удаление нужной заметки из списка
+    List<Note> notes =
+        await loadNotes(subject); // Загрузка текущего списка заметок
+    notes.removeWhere((element) =>
+        element.note == note.note); // Удаление нужной заметки из списка
     await saveNotes(subject, notes); // Сохранение обновленного списка заметок
   }
 
