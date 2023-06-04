@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
   final themeModel = ThemeModel();
   await themeModel.loadTheme();
   initializeDateFormatting().then((_) => runApp(ChangeNotifierProvider.value(
@@ -18,20 +19,35 @@ void main() async {
       )));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-  String get name => 'foo';
-  Future<void> initializeDefault() async {
-    FirebaseApp app = await Firebase.initializeApp(
-        // options: DefaultFirebaseOptions.currentPlatform,
-        );
-    print('Initialized default app $app');
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('onMessage: $message');
+      // Handle the notification received while the app is in the foreground
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('onMessageOpenedApp: $message');
+      // Handle the notification opened by the user while the app was in the background
+    });
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  Future<void> delete() async {
-    final FirebaseApp app = Firebase.app(name);
-    await app.delete();
-    print('App $name deleted');
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    print('onBackgroundMessage: $message');
+    // Handle the notification received while the app is in the background
   }
 
   @override
