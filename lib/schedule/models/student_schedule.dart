@@ -4,8 +4,8 @@ class StudentLesson {
   String day;
   int numberPair;
   String subject;
-  List<Teacher> teachers;
   String classroom;
+  List<Teacher> teachers;
 
   StudentLesson(
       {required this.day,
