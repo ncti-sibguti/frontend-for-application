@@ -83,6 +83,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
         onWebSocketError: (dynamic error) {
           debugPrint('WebSocket error: ${error.toString()}');
         },
+        onDisconnect: (p0) => debugPrint(p0.body),
       ),
     );
     stompClient?.activate();

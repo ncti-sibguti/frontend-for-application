@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:ncti/repository/ncti_repository.dart';
 import 'package:ncti/routes/router.dart';
-
-import 'package:ncti/schedule/widgets/schedule_student_lessons.dart';
-import 'package:ncti/schedule/widgets/schedule_teacher_lessons.dart';
+import 'package:ncti/schedule/widgets/student_lesson_widget.dart';
+import 'package:ncti/schedule/widgets/teacher_lesson_widget.dart';
 
 @RoutePage()
 class SchedulePage extends StatefulWidget {
@@ -22,6 +22,9 @@ class _SchedulePageState extends State<SchedulePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      selectedDay = daysOfWeek[weekdayInt];
+    });
     getSched();
   }
 
@@ -66,6 +69,70 @@ class _SchedulePageState extends State<SchedulePage> {
     getSched();
   }
 
+  static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+
+  static int weekdayInt = (DateTime.now().weekday - 1);
+  String? selectedDay;
+  final PageController _pageController =
+      PageController(initialPage: weekdayInt);
+
+  DateTime getDateTimeForDayOfWeek(int dayOfWeek) {
+    DateTime currentDate = DateTime.now();
+    int difference = dayOfWeek - currentDate.weekday;
+    DateTime desiredDate = currentDate.add(Duration(days: difference));
+    return desiredDate;
+  }
+
+  void onDaySelected(String day) {
+    setState(() {
+      selectedDay = day;
+    });
+  }
+
+  List<dynamic> getLessonsForDay(int day) {
+    String dayOfWeek = daysOfWeek[day];
+    if (dataJson.containsKey(dayOfWeek)) {
+      return dataJson[dayOfWeek];
+    } else {
+      return [];
+    }
+  }
+
+  Widget _buildDaysButtons() {
+    return SizedBox(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: daysOfWeek.length,
+        itemBuilder: (context, int pageIndex) {
+          return SizedBox(
+            width: MediaQuery.of(context).size.width * 1 / daysOfWeek.length,
+            child: TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith((states) {
+                  return selectedDay == daysOfWeek[pageIndex]
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.primary;
+                }),
+                foregroundColor: MaterialStateColor.resolveWith((states) {
+                  return selectedDay == daysOfWeek[pageIndex]
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.secondary;
+                }),
+              ),
+              onPressed: () {
+                setState(() {
+                  _pageController.jumpToPage(pageIndex);
+                });
+              },
+              child: Text(daysOfWeek[pageIndex]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var itemsActionBar = [
@@ -88,27 +155,71 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
       ),
     ];
-
     return Scaffold(
-        floatingActionButton: SpeedDial(
-          overlayOpacity: 0,
-          icon: Icons.arrow_upward_outlined,
-          activeIcon: Icons.arrow_downward_outlined,
-          foregroundColor: Theme.of(context).colorScheme.primary,
-          children: itemsActionBar,
-        ),
-        body: isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.secondary,
+      floatingActionButton: SpeedDial(
+        overlayOpacity: 0,
+        icon: Icons.arrow_upward_outlined,
+        activeIcon: Icons.arrow_downward_outlined,
+        foregroundColor: Theme.of(context).colorScheme.primary,
+        children: itemsActionBar,
+      ),
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            )
+          : Column(
+              children: [
+                const SizedBox(height: 8.0),
+                SizedBox(height: 40, child: _buildDaysButtons()),
+                const SizedBox(height: 16.0),
+                Expanded(
+                  child: PageView.builder(
+                    onPageChanged: (int pageIndex) =>
+                        onDaySelected(daysOfWeek[pageIndex]),
+                    controller: _pageController,
+                    itemBuilder: (context, pageIndex) {
+                      DateTime day = getDateTimeForDayOfWeek(pageIndex + 1);
+                      List<dynamic> lessons = getLessonsForDay(pageIndex);
+                      String formattedDate =
+                          DateFormat.yMMMMEEEEd().format(day);
+
+                      if (lessons.isNotEmpty) {
+                        return Column(
+                          children: [
+                            Text(formattedDate),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: lessons.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return role.contains("ROLE_TEACHER")
+                                      ? TeacherLessonWidget(
+                                          lesson: lessons[index], day: day)
+                                      : StudentLessonWidget(
+                                          lesson: lessons[index], day: day);
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Center(
+                          child: Card(
+                            child: ListTile(
+                              title: Text('Пары отсутствуют',
+                                  style:
+                                      Theme.of(context).textTheme.labelLarge),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    itemCount: daysOfWeek.length,
+                  ),
                 ),
-              )
-            : role.contains('ROLE_TEACHER')
-                ? RefreshIndicator(
-                    onRefresh: _refreshSchedule,
-                    child: TeacherDayWidget(dataJson: dataJson))
-                : RefreshIndicator(
-                    onRefresh: _refreshSchedule,
-                    child: StudentDayWidget(dataJson: dataJson)));
+              ],
+            ),
+    );
   }
 }

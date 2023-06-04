@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "842076816830",
+    "project_id": "poltinnikov51-90e29",
+    "storage_bucket": "poltinnikov51-90e29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842076816830:android:abec146353b4ab034865ef",
+        "android_client_info": {
+          "package_name": "ncti.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842076816830-j74td7jnba38vomkql7arot7gt16qhp8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhH9z0MTh-2WhSqrnJrmj7JSIS7NV673E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842076816830-j74td7jnba38vomkql7arot7gt16qhp8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
