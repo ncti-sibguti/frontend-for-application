@@ -6,11 +6,19 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:ncti/routes/router.dart';
 import 'package:ncti/theme_changer.dart';
 import 'package:provider/provider.dart';
-// import 'firebase_options.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    name: 'ncti',
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseMessaging.instance.getToken().then((token) {
+    print('DEVICE_TOKEN: $token');
+  });
+
   final themeModel = ThemeModel();
   await themeModel.loadTheme();
   initializeDateFormatting().then((_) => runApp(ChangeNotifierProvider.value(
@@ -27,29 +35,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-  @override
-  void initState() {
-    super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('onMessage: $message');
-      // Handle the notification received while the app is in the foreground
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('onMessageOpenedApp: $message');
-      // Handle the notification opened by the user while the app was in the background
-    });
-
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  }
-
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    print('onBackgroundMessage: $message');
-    // Handle the notification received while the app is in the background
-  }
-
   @override
   Widget build(BuildContext context) {
     final appRouter = AppRouter();
