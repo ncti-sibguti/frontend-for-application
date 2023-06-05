@@ -16,33 +16,49 @@ class GroupLessonsPage extends StatefulWidget {
 }
 
 class _GroupLessonsPageState extends State<GroupLessonsPage> {
-  dynamic dataJson;
-  bool isLoading = true;
-  String? selectedDay;
-  final PageController _pageController = PageController(initialPage: 0);
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      selectedDay = daysOfWeek[weekdayInt];
+    });
+    getSched();
+  }
+
+  dynamic dataJson = '';
+  bool isLoading = true;
+  List<String> role = [];
+
+  void getSched() async {
     GetScheduleRepositories()
         .getScheduleGroup(widget.group.id.toString())
         .then((data) {
       setState(() {
-        dataJson = data;
         isLoading = false;
+        dataJson = data;
       });
     });
   }
 
-  static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
-  List<dynamic> getLessonsForDay(int day) {
-    String dayOfWeek = daysOfWeek[day];
-    if (dataJson.containsKey(dayOfWeek)) {
-      return dataJson[dayOfWeek];
-    } else {
-      return [];
-    }
+  Future<void> _refreshSchedule() async {
+    getSched();
   }
+
+  static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+  static List<String> weekdays = [
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота"
+  ];
+
+  static int weekdayInt = (DateTime.now().weekday - 1);
+  String? selectedDay;
+  final PageController _pageController =
+      PageController(initialPage: weekdayInt);
 
   DateTime getDateTimeForDayOfWeek(int dayOfWeek) {
     DateTime currentDate = DateTime.now();
@@ -57,8 +73,9 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
     });
   }
 
-  List<dynamic> _getLessonsForDay(int day) {
-    String dayOfWeek = daysOfWeek[day];
+  List<dynamic> getLessonsForDay(int day) {
+    debugPrint(dataJson.toString());
+    String dayOfWeek = weekdays[day];
     if (dataJson.containsKey(dayOfWeek)) {
       return dataJson[dayOfWeek];
     } else {
@@ -66,13 +83,44 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
     }
   }
 
+  Widget _buildDaysButtons() {
+    return SizedBox(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: daysOfWeek.length,
+        itemBuilder: (context, int pageIndex) {
+          return SizedBox(
+            width: MediaQuery.of(context).size.width * 1 / daysOfWeek.length,
+            child: TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith((states) {
+                  return selectedDay == daysOfWeek[pageIndex]
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.primary;
+                }),
+                foregroundColor: MaterialStateColor.resolveWith((states) {
+                  return selectedDay == daysOfWeek[pageIndex]
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.secondary;
+                }),
+              ),
+              onPressed: () {
+                setState(() {
+                  _pageController.jumpToPage(pageIndex);
+                });
+              },
+              child: Text(daysOfWeek[pageIndex]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Text(widget.group.name),
-      ),
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(
@@ -82,44 +130,7 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
           : Column(
               children: [
                 const SizedBox(height: 8.0),
-                SizedBox(
-                    height: 40,
-                    child: SizedBox(
-                      height: 40,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: daysOfWeek.length,
-                        itemBuilder: (context, int pageIndex) {
-                          return SizedBox(
-                            width: MediaQuery.of(context).size.width *
-                                1 /
-                                daysOfWeek.length,
-                            child: TextButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateColor.resolveWith((states) {
-                                  return selectedDay == daysOfWeek[pageIndex]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context).colorScheme.primary;
-                                }),
-                                foregroundColor:
-                                    MaterialStateColor.resolveWith((states) {
-                                  return selectedDay == daysOfWeek[pageIndex]
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.secondary;
-                                }),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _pageController.jumpToPage(pageIndex);
-                                });
-                              },
-                              child: Text(daysOfWeek[pageIndex]),
-                            ),
-                          );
-                        },
-                      ),
-                    )),
+                SizedBox(height: 40, child: _buildDaysButtons()),
                 const SizedBox(height: 16.0),
                 Expanded(
                   child: PageView.builder(
@@ -148,6 +159,7 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
                           ],
                         );
                       } else {
+                        debugPrint(lessons.toString());
                         return Center(
                           child: Card(
                             child: ListTile(

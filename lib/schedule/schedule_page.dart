@@ -70,6 +70,14 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+  static List<String> weekdays = [
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота"
+  ];
 
   static int weekdayInt = (DateTime.now().weekday - 1);
   String? selectedDay;
@@ -90,7 +98,7 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   List<dynamic> getLessonsForDay(int day) {
-    String dayOfWeek = daysOfWeek[day];
+    String dayOfWeek = weekdays[day];
     if (dataJson.containsKey(dayOfWeek)) {
       return dataJson[dayOfWeek];
     } else {

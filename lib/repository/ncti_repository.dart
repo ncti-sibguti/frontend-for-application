@@ -11,7 +11,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 //94.154.11.150
 //25.28.126.117
-const String SERVER = 'http://94.154.11.150:8080/api';
+const String SERVER = 'http://25.28.126.117:8080/api';
 
 class LoginRepositories {
   Future<bool> login(TextEditingController usernameController,
@@ -196,7 +196,7 @@ class GetScheduleRepositories {
       final responseBody = utf8.decode(response.bodyBytes);
 
       final jsonData = deserializeStudentLessons(responseBody);
-
+      debugPrint(jsonData.toString());
       return jsonData;
     } else {
       throw Exception('Failed to  student schedule');

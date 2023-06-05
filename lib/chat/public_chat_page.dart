@@ -61,7 +61,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
         //   'Content-type': 'application/json',
         //   'Authorization': 'Bearer $accessToken'
         // },
-        url: 'http://94.154.11.150:8080/api/ws',
+        url: 'http://25.28.126.117:8080/api/ws',
         onConnect: (StompFrame connectFrame) {
           setState(() {
             isLoading = false;
