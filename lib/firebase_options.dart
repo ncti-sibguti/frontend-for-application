@@ -44,40 +44,40 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDCZP2eqpzVxhj55C1pBr3wT7cKbm1Reus',
-    appId: '1:653162188588:web:7eb96ea626407fb35aa689',
-    messagingSenderId: '653162188588',
-    projectId: 'ncti-906c7',
-    authDomain: 'ncti-906c7.firebaseapp.com',
-    storageBucket: 'ncti-906c7.appspot.com',
-    measurementId: 'G-861ELV481C',
+    apiKey: 'AIzaSyB_xHZbx4RFZoSEYD2DkwMMfLZ-NOlTMps',
+    appId: '1:297019898515:web:c6c1c4bfa55b8b2618ab66',
+    messagingSenderId: '297019898515',
+    projectId: 'ncti-3f720',
+    authDomain: 'ncti-3f720.firebaseapp.com',
+    storageBucket: 'ncti-3f720.appspot.com',
+    measurementId: 'G-9PZC28KNDM',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDhtl6ERSrsrprKQLTKQ_ydgj9R6FE0m8I',
-    appId: '1:653162188588:android:e6acdd4701c6d8055aa689',
-    messagingSenderId: '653162188588',
-    projectId: 'ncti-906c7',
-    storageBucket: 'ncti-906c7.appspot.com',
+    apiKey: 'AIzaSyDSKRvW1YcaLJrKucqoVHueqCaRONdDN_8',
+    appId: '1:297019898515:android:a390edee6f04046a18ab66',
+    messagingSenderId: '297019898515',
+    projectId: 'ncti-3f720',
+    storageBucket: 'ncti-3f720.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC3zNH9KlRo6JG4gkaTKUHk5V_LdYdeoO4',
-    appId: '1:653162188588:ios:c5e63cf1d4e24ebc5aa689',
-    messagingSenderId: '653162188588',
-    projectId: 'ncti-906c7',
-    storageBucket: 'ncti-906c7.appspot.com',
-    iosClientId: '653162188588-28ovosfuluptt7pvhfto05gdikjpebak.apps.googleusercontent.com',
-    iosBundleId: 'com.example.ncti',
+    apiKey: 'AIzaSyCIpKWIWVSW6zH56AfHkxhjMQypifZapZE',
+    appId: '1:297019898515:ios:be7153df853be67d18ab66',
+    messagingSenderId: '297019898515',
+    projectId: 'ncti-3f720',
+    storageBucket: 'ncti-3f720.appspot.com',
+    iosClientId: '297019898515-8u5chtd3mtdfshiohkjnmmrg0bv68mv2.apps.googleusercontent.com',
+    iosBundleId: 'io.flutter.plugins.firebase.messaging',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyC3zNH9KlRo6JG4gkaTKUHk5V_LdYdeoO4',
-    appId: '1:653162188588:ios:c5e63cf1d4e24ebc5aa689',
-    messagingSenderId: '653162188588',
-    projectId: 'ncti-906c7',
-    storageBucket: 'ncti-906c7.appspot.com',
-    iosClientId: '653162188588-28ovosfuluptt7pvhfto05gdikjpebak.apps.googleusercontent.com',
-    iosBundleId: 'com.example.ncti',
+    apiKey: 'AIzaSyCIpKWIWVSW6zH56AfHkxhjMQypifZapZE',
+    appId: '1:297019898515:ios:be7153df853be67d18ab66',
+    messagingSenderId: '297019898515',
+    projectId: 'ncti-3f720',
+    storageBucket: 'ncti-3f720.appspot.com',
+    iosClientId: '297019898515-8u5chtd3mtdfshiohkjnmmrg0bv68mv2.apps.googleusercontent.com',
+    iosBundleId: 'io.flutter.plugins.firebase.messaging',
   );
 }

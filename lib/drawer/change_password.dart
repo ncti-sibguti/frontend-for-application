@@ -2,7 +2,7 @@
 
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:ncti/repository/ncti_repository.dart';
+import '/repository/ncti_repository.dart';
 
 @RoutePage()
 class ChangePasswordPage extends StatefulWidget {

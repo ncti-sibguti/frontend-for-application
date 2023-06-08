@@ -1,63 +1,41 @@
 {
   "project_info": {
-    "project_number": "653162188588",
-    "project_id": "ncti-906c7",
-    "storage_bucket": "ncti-906c7.appspot.com"
+    "project_number": "297019898515",
+    "project_id": "ncti-3f720",
+    "storage_bucket": "ncti-3f720.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:653162188588:android:e6acdd4701c6d8055aa689",
+        "mobilesdk_app_id": "1:297019898515:android:a390edee6f04046a18ab66",
         "android_client_info": {
           "package_name": "com.example.ncti"
         }
       },
       "oauth_client": [
         {
-          "client_id": "653162188588-c6ksh28dfr4svil73et7gta5d6j7n7lj.apps.googleusercontent.com",
+          "client_id": "297019898515-f7vave5oqfkrg18rrt9p61jvj3g8kf0e.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDhtl6ERSrsrprKQLTKQ_ydgj9R6FE0m8I"
+          "current_key": "AIzaSyDSKRvW1YcaLJrKucqoVHueqCaRONdDN_8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "653162188588-c6ksh28dfr4svil73et7gta5d6j7n7lj.apps.googleusercontent.com",
+              "client_id": "297019898515-f7vave5oqfkrg18rrt9p61jvj3g8kf0e.apps.googleusercontent.com",
               "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:653162188588:android:cbe5f3f10433d4575aa689",
-        "android_client_info": {
-          "package_name": "ncti.app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "653162188588-c6ksh28dfr4svil73et7gta5d6j7n7lj.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDhtl6ERSrsrprKQLTKQ_ydgj9R6FE0m8I"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
+            },
             {
-              "client_id": "653162188588-c6ksh28dfr4svil73et7gta5d6j7n7lj.apps.googleusercontent.com",
-              "client_type": 3
+              "client_id": "297019898515-8u5chtd3mtdfshiohkjnmmrg0bv68mv2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.flutter.plugins.firebase.messaging"
+              }
             }
           ]
         }

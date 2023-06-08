@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ncti/repository/ncti_repository.dart';
+import '/repository/ncti_repository.dart';
 
 class UserListModal extends StatefulWidget {
   final List<User> users;

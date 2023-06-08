@@ -34,11 +34,7 @@ class _TokenMonitor extends State<TokenMonitor> {
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.instance
-        .getToken(
-            vapidKey:
-                'BNKkaUWxyP_yC_lki1kYazgca0TNhuzt2drsOrL6WrgGbqnMnr8ZMLzg_rSPDm6HKphABS0KzjPfSqCXHXEd06Y')
-        .then(setToken);
+    FirebaseMessaging.instance.getToken().then(setToken);
     _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
     _tokenStream.listen(setToken);
   }

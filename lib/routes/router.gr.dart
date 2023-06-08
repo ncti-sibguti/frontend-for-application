@@ -70,25 +70,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const UserPage(),
       );
     },
-    ScheduleRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SchedulePage(),
-      );
-    },
-    StudentLessonDetailsRoute.name: (routeData) {
-      final args = routeData.argsAs<StudentLessonDetailsRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: StudentLessonDetailsPage(lesson: args.lesson),
-      );
-    },
-    ButtonRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ButtonPage(),
-      );
-    },
     GroupLessonsRoute.name: (routeData) {
       final args = routeData.argsAs<GroupLessonsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -96,11 +77,27 @@ abstract class _$AppRouter extends RootStackRouter {
         child: GroupLessonsPage(group: args.group),
       );
     },
-    TeacherLessonDetailsRoute.name: (routeData) {
-      final args = routeData.argsAs<TeacherLessonDetailsRouteArgs>();
+    LessonDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<LessonDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: TeacherLessonDetailsPage(lesson: args.lesson),
+        child: LessonDetailsPage(
+          lesson: args.lesson,
+          day: args.day,
+          isTeacher: args.isTeacher,
+        ),
+      );
+    },
+    ScheduleRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SchedulePage(),
+      );
+    },
+    ButtonRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ButtonPage(),
       );
     },
   };
@@ -259,64 +256,6 @@ class UserRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [SchedulePage]
-class ScheduleRoute extends PageRouteInfo<void> {
-  const ScheduleRoute({List<PageRouteInfo>? children})
-      : super(
-          ScheduleRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'ScheduleRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [StudentLessonDetailsPage]
-class StudentLessonDetailsRoute
-    extends PageRouteInfo<StudentLessonDetailsRouteArgs> {
-  StudentLessonDetailsRoute({
-    required StudentLesson lesson,
-    List<PageRouteInfo>? children,
-  }) : super(
-          StudentLessonDetailsRoute.name,
-          args: StudentLessonDetailsRouteArgs(lesson: lesson),
-          initialChildren: children,
-        );
-
-  static const String name = 'StudentLessonDetailsRoute';
-
-  static const PageInfo<StudentLessonDetailsRouteArgs> page =
-      PageInfo<StudentLessonDetailsRouteArgs>(name);
-}
-
-class StudentLessonDetailsRouteArgs {
-  const StudentLessonDetailsRouteArgs({required this.lesson});
-
-  final StudentLesson lesson;
-
-  @override
-  String toString() {
-    return 'StudentLessonDetailsRouteArgs{lesson: $lesson}';
-  }
-}
-
-/// generated route for
-/// [ButtonPage]
-class ButtonRoute extends PageRouteInfo<void> {
-  const ButtonRoute({List<PageRouteInfo>? children})
-      : super(
-          ButtonRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'ButtonRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
 /// [GroupLessonsPage]
 class GroupLessonsRoute extends PageRouteInfo<GroupLessonsRouteArgs> {
   GroupLessonsRoute({
@@ -346,31 +285,72 @@ class GroupLessonsRouteArgs {
 }
 
 /// generated route for
-/// [TeacherLessonDetailsPage]
-class TeacherLessonDetailsRoute
-    extends PageRouteInfo<TeacherLessonDetailsRouteArgs> {
-  TeacherLessonDetailsRoute({
-    required TeacherLesson lesson,
+/// [LessonDetailsPage]
+class LessonDetailsRoute extends PageRouteInfo<LessonDetailsRouteArgs> {
+  LessonDetailsRoute({
+    required dynamic lesson,
+    required DateTime day,
+    required bool isTeacher,
     List<PageRouteInfo>? children,
   }) : super(
-          TeacherLessonDetailsRoute.name,
-          args: TeacherLessonDetailsRouteArgs(lesson: lesson),
+          LessonDetailsRoute.name,
+          args: LessonDetailsRouteArgs(
+            lesson: lesson,
+            day: day,
+            isTeacher: isTeacher,
+          ),
           initialChildren: children,
         );
 
-  static const String name = 'TeacherLessonDetailsRoute';
+  static const String name = 'LessonDetailsRoute';
 
-  static const PageInfo<TeacherLessonDetailsRouteArgs> page =
-      PageInfo<TeacherLessonDetailsRouteArgs>(name);
+  static const PageInfo<LessonDetailsRouteArgs> page =
+      PageInfo<LessonDetailsRouteArgs>(name);
 }
 
-class TeacherLessonDetailsRouteArgs {
-  const TeacherLessonDetailsRouteArgs({required this.lesson});
+class LessonDetailsRouteArgs {
+  const LessonDetailsRouteArgs({
+    required this.lesson,
+    required this.day,
+    required this.isTeacher,
+  });
 
-  final TeacherLesson lesson;
+  final dynamic lesson;
+
+  final DateTime day;
+
+  final bool isTeacher;
 
   @override
   String toString() {
-    return 'TeacherLessonDetailsRouteArgs{lesson: $lesson}';
+    return 'LessonDetailsRouteArgs{lesson: $lesson, day: $day, isTeacher: $isTeacher}';
   }
+}
+
+/// generated route for
+/// [SchedulePage]
+class ScheduleRoute extends PageRouteInfo<void> {
+  const ScheduleRoute({List<PageRouteInfo>? children})
+      : super(
+          ScheduleRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ScheduleRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ButtonPage]
+class ButtonRoute extends PageRouteInfo<void> {
+  const ButtonRoute({List<PageRouteInfo>? children})
+      : super(
+          ButtonRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ButtonRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }

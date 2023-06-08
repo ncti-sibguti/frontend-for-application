@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ncti/schedule/models/schedule_repository.dart';
 
-import 'package:ncti/repository/ncti_repository.dart';
-import 'package:ncti/schedule/widgets/student_lesson_widget.dart';
+import '/repository/ncti_repository.dart';
+import '/schedule/widgets/lesson_widget.dart';
 
 @RoutePage()
 class GroupLessonsPage extends StatefulWidget {
@@ -45,6 +46,7 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
     getSched();
   }
 
+//TODO Экран по камерой
   static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
   static List<String> weekdays = [
     "Понедельник",
@@ -151,8 +153,11 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
                               child: ListView.builder(
                                 itemCount: lessons.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return StudentLessonWidget(
-                                      lesson: lessons[index], day: day);
+                                  return LessonWidget(
+                                    lesson: lessons[index],
+                                    day: day,
+                                    isTeacher: false,
+                                  );
                                 },
                               ),
                             ),

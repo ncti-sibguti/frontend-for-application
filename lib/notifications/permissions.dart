@@ -5,6 +5,7 @@
 // ignore_for_file: require_trailing_commas
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:ncti/repository/ncti_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,8 @@ class _Permissions extends State<Permissions> {
       carPlay: true,
       criticalAlert: true,
     );
+
+    NotificationRep().postToken();
 
     setState(() {
       _requested = true;
@@ -75,11 +78,11 @@ class _Permissions extends State<Permissions> {
     if (!_requested) {
       return ElevatedButton(
           onPressed: requestPermissions,
-          child: const Text('Request Permissions'));
+          child: const Text('Разрешить уведомления'));
     }
 
     return Column(children: [
-      row('Authorization Status', statusMap[_settings.authorizationStatus]!),
+      row('Статус', statusMap[_settings.authorizationStatus]!),
       if (defaultTargetPlatform == TargetPlatform.iOS) ...[
         row('Alert', settingsMap[_settings.alert]!),
         row('Announcement', settingsMap[_settings.announcement]!),
@@ -91,14 +94,14 @@ class _Permissions extends State<Permissions> {
         row('Sound', settingsMap[_settings.sound]!),
       ],
       ElevatedButton(
-          onPressed: checkPermissions, child: const Text('Reload Permissions')),
+          onPressed: checkPermissions, child: const Text('Обновить запрос')),
     ]);
   }
 }
 
 /// Maps a [AuthorizationStatus] to a string value.
 const statusMap = {
-  AuthorizationStatus.authorized: 'Authorized',
+  AuthorizationStatus.authorized: 'Авторизован',
   AuthorizationStatus.denied: 'Denied',
   AuthorizationStatus.notDetermined: 'Not Determined',
   AuthorizationStatus.provisional: 'Provisional',

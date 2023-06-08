@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:ncti/repository/ncti_repository.dart';
+import '/repository/ncti_repository.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:ncti/routes/router.dart';
+import '/routes/router.dart';
 
 @RoutePage()
 class LoginPage extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ncti/theme.dart';
+import '/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeModel extends ChangeNotifier {

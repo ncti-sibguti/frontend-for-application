@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:ncti/chat/add_user_chat.dart';
-import 'package:ncti/repository/ncti_repository.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:ncti/chat/chat_repository.dart';
+
+import 'Window/add_user_chat.dart';
+import '/repository/ncti_repository.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:ncti/theme.dart';
+import '/theme.dart';
 
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
@@ -34,15 +37,12 @@ class PublicChatPage extends StatefulWidget {
 class _PublicChatPageState extends State<PublicChatPage> {
   List<types.Message> _messages = [];
 
-  StompUnsubscribe? unsubscribe;
-  StompClient? stompClient;
-  String? accessToken;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    connectToWebSocket();
+    connectToWebSocket(widget.chatId);
     GetChat().getMessages(widget.chatId).then((value) {
       setState(() {
         _messages = value;
@@ -50,25 +50,28 @@ class _PublicChatPageState extends State<PublicChatPage> {
     });
   }
 
-  void connectToWebSocket() async {
-    // String? accessToken = await GetToken().getAccessToken();
+  StompUnsubscribe? unsubscribe;
+  StompClient? stompClient;
+
+  void connectToWebSocket(String chatId) async {
+    String? accessToken = await GetToken().getAccessToken();
 
     stompClient = StompClient(
       config: StompConfig.SockJS(
         //TODO раскоменти при релизе
         // stompConnectHeaders: ,
-        // webSocketConnectHeaders: {
-        //   'Content-type': 'application/json',
-        //   'Authorization': 'Bearer $accessToken'
-        // },
-        url: 'http://25.28.126.117:8080/api/ws',
+        webSocketConnectHeaders: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        },
+        url: '${dotenv.get('SERVER')}/ws',
         onConnect: (StompFrame connectFrame) {
           setState(() {
             isLoading = false;
           });
           debugPrint('Connected to WebSocket');
           unsubscribe = stompClient!.subscribe(
-            destination: '/topic/chats/${widget.chatId}',
+            destination: '/topic/chats/$chatId',
             callback: (StompFrame frame) {
               final messages =
                   types.TextMessage.fromJson(jsonDecode(frame.body!));
@@ -76,7 +79,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
                 _messages.insert(0, messages);
               });
               // Обработка полученного события
-              print(frame.body);
+              debugPrint(frame.body);
             },
           );
         },
@@ -87,6 +90,14 @@ class _PublicChatPageState extends State<PublicChatPage> {
       ),
     );
     stompClient?.activate();
+  }
+
+  void disconnectFromWebSocket() {
+    debugPrint('disconnect');
+
+    // Вызов функции отписки
+    unsubscribe!();
+    stompClient?.deactivate();
   }
 
   // void subscribeToChatTopic() {
@@ -165,7 +176,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
   void _sendMessage(types.PartialText message) {
     stompClient?.send(
       destination: '/chats/${widget.chatId}',
-      body: jsonEncode({"senderId": widget.id, "text": message.text}),
+      body: jsonEncode({"text": message.text}),
       headers: {},
     );
   }
@@ -185,13 +196,5 @@ class _PublicChatPageState extends State<PublicChatPage> {
   void dispose() {
     disconnectFromWebSocket();
     super.dispose();
-  }
-
-  void disconnectFromWebSocket() {
-    debugPrint('disconnect');
-
-    // Вызов функции отписки
-    unsubscribe!();
-    stompClient?.deactivate();
   }
 }

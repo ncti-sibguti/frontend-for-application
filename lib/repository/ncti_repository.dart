@@ -1,17 +1,37 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:ncti/schedule/models/student_schedule.dart';
-import 'package:ncti/schedule/models/teacher_schedule.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:shared_preferences/shared_preferences.dart';
 
 //94.154.11.150
 //25.28.126.117
-const String SERVER = 'http://25.28.126.117:8080/api';
+
+String SERVER = dotenv.get('SERVER');
+
+class NotificationRep {
+  Future<void> postToken() async {
+    String? accessToken = await GetToken().getAccessToken();
+
+    String? token = await FirebaseMessaging.instance.getToken();
+    debugPrint('отправлено $token');
+
+    final url = Uri.parse('$SERVER/user/fcm-token');
+    final response = await http.post(
+      url,
+      body: jsonEncode({'token': token}),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+    debugPrint(response.body);
+  }
+}
 
 class LoginRepositories {
   Future<bool> login(TextEditingController usernameController,
@@ -146,86 +166,6 @@ class UpdateToken {
   }
 }
 
-class GetScheduleRepositories {
-  Future getStudentSchedule() async {
-    String? accessToken = await GetToken().getAccessToken();
-
-    String url = "$SERVER/student/schedule";
-    final response = await http.get(Uri.parse(url), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken'
-    });
-    if (response.statusCode == 200) {
-      final responseBody = utf8.decode(response.bodyBytes);
-
-      final jsonData = deserializeStudentLessons(responseBody);
-
-      return jsonData;
-    } else {
-      throw Exception('Failed to load student schedule');
-    }
-  }
-
-  Future getTeacherSchedule() async {
-    String? accessToken = await GetToken().getAccessToken();
-
-    String url = "$SERVER/teacher/schedule";
-    final response = await http.get(Uri.parse(url), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken'
-    });
-    if (response.statusCode == 200) {
-      final responseBody = utf8.decode(response.bodyBytes);
-      final jsonData = deserializeTeacherLessons(responseBody);
-
-      return jsonData;
-    } else {
-      throw Exception('Failed to teacher student schedule');
-    }
-  }
-
-  Future getScheduleGroup(String groupId) async {
-    String? accessToken = await GetToken().getAccessToken();
-
-    String url = "$SERVER/user/groups/$groupId";
-    final response = await http.get(Uri.parse(url), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken'
-    });
-    if (response.statusCode == 200) {
-      final responseBody = utf8.decode(response.bodyBytes);
-
-      final jsonData = deserializeStudentLessons(responseBody);
-      debugPrint(jsonData.toString());
-      return jsonData;
-    } else {
-      throw Exception('Failed to  student schedule');
-    }
-  }
-
-  Future editClassroom(List<String> group, String subject, int numberPair,
-      TextEditingController controller) async {
-    String classroom = controller.text;
-    String? accessToken = await GetToken().getAccessToken();
-
-    String url = "$SERVER/teacher/change-schedule";
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-        'Content-type': 'application/json',
-      },
-      body: jsonEncode({
-        "group": group,
-        "subject": subject,
-        "numberPair": numberPair,
-        "classroom": classroom
-      }),
-    );
-    return response.body;
-  }
-}
-
 class GetUser {
   Future<String> getStudent() async {
     String? accessToken = await GetToken().getAccessToken();
@@ -310,86 +250,6 @@ class ScheduleGroup {
       id: json['id'],
       name: json['name'],
     );
-  }
-}
-
-class GetChat {
-  Future getChats() async {
-    String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/chats";
-    final response = await http.get(Uri.parse(url), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken'
-    });
-
-    if (response.statusCode == 200) {
-      final responseBody = utf8.decode(response.bodyBytes);
-      final res = parseGroups(responseBody);
-      return res;
-    } else {
-      throw Exception('failed to load chat');
-    }
-  }
-
-  Future getMessages(String chatId) async {
-    String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/chats/$chatId";
-    final response = await http.get(Uri.parse(url), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken'
-    });
-    if (response.statusCode == 200) {
-      final responseBody = utf8.decode(response.bodyBytes);
-      final messages = (jsonDecode(responseBody) as List)
-          .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
-          .toList();
-      return messages;
-    } else {
-      throw Exception('failed to load chat');
-    }
-  }
-
-  Future createChat(String name, List<int> selectedUser) async {
-    String? accessToken = await GetToken().getAccessToken();
-    final url = Uri.parse('$SERVER/chats/create/');
-    final response = await http.post(
-      url,
-      body: jsonEncode({"name": name, "ids": selectedUser}),
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': 'Bearer $accessToken'
-      },
-    );
-    return response.body;
-  }
-
-  Future deleteChat(
-    String chatId,
-  ) async {
-    String? accessToken = await GetToken().getAccessToken();
-    final url = Uri.parse('$SERVER/chats/$chatId/logout');
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': 'Bearer $accessToken'
-      },
-    );
-    if (response.statusCode == 200) {
-      return true;
-    }
-  }
-
-  Future addUserToChat(String chatId, List<int> selectedIds) async {
-    String? accessToken = await GetToken().getAccessToken();
-    final url = Uri.parse('$SERVER/chats/$chatId');
-    final response = await http.post(url,
-        body: jsonEncode({"ids": selectedIds}),
-        headers: {
-          'Content-type': 'application/json',
-          'Authorization': 'Bearer $accessToken'
-        });
-    debugPrint(response.body);
   }
 }
 

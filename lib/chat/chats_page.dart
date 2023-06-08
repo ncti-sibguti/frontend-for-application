@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:ncti/chat/create_group_chat.dart';
-import 'package:ncti/repository/ncti_repository.dart';
+import 'package:ncti/chat/chat_repository.dart';
+import 'Window/create_group_chat.dart';
+import '/repository/ncti_repository.dart';
 
 import '../routes/router.dart';
 

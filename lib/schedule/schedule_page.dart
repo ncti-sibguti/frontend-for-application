@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:ncti/repository/ncti_repository.dart';
-import 'package:ncti/routes/router.dart';
-import 'package:ncti/schedule/widgets/student_lesson_widget.dart';
-import 'package:ncti/schedule/widgets/teacher_lesson_widget.dart';
+import 'package:ncti/schedule/models/schedule_repository.dart';
+import 'package:ncti/schedule/widgets/lesson_widget.dart';
+import '/repository/ncti_repository.dart';
+import '/routes/router.dart';
 
 @RoutePage()
 class SchedulePage extends StatefulWidget {
@@ -20,7 +20,6 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       selectedDay = daysOfWeek[weekdayInt];
@@ -30,6 +29,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   dynamic dataJson = '';
   bool isLoading = true;
+  bool isTeacher = false;
   List<String> role = [];
 
   void getSched() async {
@@ -48,16 +48,20 @@ class _SchedulePageState extends State<SchedulePage> {
         // Получение расписания
         if (authorities.contains('ROLE_STUDENT')) {
           GetScheduleRepositories().getStudentSchedule().then((data) {
+            if (!mounted) return;
             setState(() {
               isLoading = false;
               dataJson = data;
+              isTeacher = false;
             });
           });
         } else if (authorities.contains('ROLE_TEACHER')) {
           GetScheduleRepositories().getTeacherSchedule().then((data) {
+            if (!mounted) return;
             setState(() {
               isLoading = false;
               dataJson = data;
+              isTeacher = true;
             });
           });
         }
@@ -155,7 +159,7 @@ class _SchedulePageState extends State<SchedulePage> {
       SpeedDialChild(
         backgroundColor: Colors.indigoAccent,
         onTap: () {
-          AutoRouter.of(context).push(ButtonRoute());
+          AutoRouter.of(context).push(const ButtonRoute());
         },
         child: Icon(
           Icons.group_outlined,
@@ -191,21 +195,23 @@ class _SchedulePageState extends State<SchedulePage> {
                       DateTime day = getDateTimeForDayOfWeek(pageIndex + 1);
                       List<dynamic> lessons = getLessonsForDay(pageIndex);
                       String formattedDate =
-                          DateFormat.yMMMMEEEEd().format(day);
+                          DateFormat.yMMMMEEEEd('ru_RU').format(day);
 
                       if (lessons.isNotEmpty) {
                         return Column(
                           children: [
                             Text(formattedDate),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             Expanded(
                               child: ListView.builder(
                                 itemCount: lessons.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return role.contains("ROLE_TEACHER")
-                                      ? TeacherLessonWidget(
-                                          lesson: lessons[index], day: day)
-                                      : StudentLessonWidget(
-                                          lesson: lessons[index], day: day);
+                                  return LessonWidget(
+                                      lesson: lessons[index],
+                                      day: day,
+                                      isTeacher: isTeacher);
                                 },
                               ),
                             ),

@@ -1,49 +1,31 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:auto_route/annotations.dart';
-import 'package:ncti/repository/ncti_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ncti/schedule/models/schedule_repository.dart';
 
-import 'models/teacher_schedule.dart';
+import 'models/schedule_notes.dart';
 
 @RoutePage()
-class TeacherLessonDetailsPage extends StatefulWidget {
-  final TeacherLesson lesson;
+class LessonDetailsPage extends StatefulWidget {
+  final dynamic lesson;
+  final DateTime day;
+  final bool isTeacher;
 
-  TeacherLessonDetailsPage({required this.lesson});
+  LessonDetailsPage(
+      {required this.lesson, required this.day, required this.isTeacher});
 
   @override
-  State<TeacherLessonDetailsPage> createState() =>
-      _TeacherLessonDetailsPageState();
+  State<LessonDetailsPage> createState() => _LessonDetailsPageState();
 }
 
-class Note {
-  final String note;
-
-  Note({required this.note});
-
-  factory Note.fromJson(Map<String, dynamic> json) {
-    return Note(
-      note: json['note'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'note': note,
-    };
-  }
-}
-
-class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
+class _LessonDetailsPageState extends State<LessonDetailsPage> {
   List<Note> savedNotes = [];
-  final TextEditingController _classroomController = TextEditingController();
   String newNote = '';
+  final TextEditingController _classroomController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    loadNotes(widget.lesson.subject).then((value) {
+    ScheduleNotes().loadNotes(widget.lesson.subject).then((value) {
       setState(() {
         savedNotes = value;
       });
@@ -58,69 +40,73 @@ class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
         title: Text(widget.lesson.subject),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${widget.lesson.numberPair}-я пара',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16.0),
-              Text(
-                'Предмет: ${widget.lesson.subject}',
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 16.0),
-              Text(
-                widget.lesson.groups.join(', '),
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: Theme.of(context).colorScheme.secondary),
-              ),
-              const SizedBox(height: 16.0),
-              Row(
-                children: [
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(
+                  '${widget.lesson.numberPair}-я пара',
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Предмет: ${widget.lesson.subject}',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  widget.isTeacher
+                      ? widget.lesson.groups.join(', ')
+                      : widget.lesson.teachers
+                          .map((e) =>
+                              '${e.lastname} ${e.firstname} ${e.surname}')
+                          .join(', \n'),
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      color: Theme.of(context).colorScheme.secondary),
+                ),
+                const SizedBox(height: 16.0),
+                Row(children: [
                   Text(
                     'Аудитория: ${widget.lesson.classroom}',
                     style: const TextStyle(fontSize: 18),
                   ),
-                  // IconButton(
-                  //     onPressed: () => _editClassroom(context),
-                  //     icon: Icon(Icons.edit_outlined))
-                ],
-              ),
-              const SizedBox(height: 16.0),
-              getScheduleItemByNumberPair(context, widget.lesson.numberPair),
-              const SizedBox(height: 16.0),
-              Text(
-                "Заметки по ${widget.lesson.subject}:",
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 16.0),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: savedNotes.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text(
-                      savedNotes[index].note,
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                    leading: const Icon(Icons.delete_outline),
-                    onTap: () =>
-                        deleteNotes(widget.lesson.subject, savedNotes[index]),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+                  if (widget.isTeacher)
+                    IconButton(
+                        onPressed: () => _editClassroom(context),
+                        icon: const Icon(Icons.edit_outlined))
+                ]),
+                const SizedBox(height: 16.0),
+                getScheduleItemByNumberPair(context, widget.lesson.numberPair),
+                const SizedBox(height: 16.0),
+                Text(
+                  "Заметки по ${widget.lesson.subject}:",
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 16.0),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: savedNotes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(
+                        savedNotes[index].note,
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => ScheduleNotes().deleteNotes(
+                            widget.lesson.subject, savedNotes[index]),
+                      ),
+                      leading: Icon(Icons.notes_outlined),
+                    );
+                  },
+                ),
+              ]))),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
@@ -180,35 +166,8 @@ class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
     );
   }
 
-  Future<void> saveNotes(String subject, List<Note> notes) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String notesJson = jsonEncode(
-        notes.map((note) => Note(note: note.note).toJson()).toList());
-    await prefs.setString('notes_$subject', notesJson);
-  }
-
-  Future<List<Note>> loadNotes(String subject) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String notesJson = prefs.getString('notes_$subject') ?? '[]';
-    List<dynamic> notesList = jsonDecode(notesJson);
-    List<Note> notes = notesList
-        .cast<Map<String, dynamic>>()
-        .map<Note>((json) => Note.fromJson(json))
-        .toList();
-
-    return notes;
-  }
-
-  void deleteNotes(String subject, Note note) async {
-    List<Note> notes =
-        await loadNotes(subject); // Загрузка текущего списка заметок
-    notes.removeWhere((element) =>
-        element.note == note.note); // Удаление нужной заметки из списка
-    await saveNotes(subject, notes); // Сохранение обновленного списка заметок
-  }
-
   void _saveNotes(String subject, List<Note> notes) async {
-    await saveNotes(subject, notes);
+    await ScheduleNotes().saveNotes(subject, notes);
     // Optionally, provide feedback to indicate that the notes have been saved
   }
 
@@ -228,7 +187,7 @@ class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
   }
 
   Widget getScheduleItemByNumberPair(BuildContext context, int numberPair) {
-    loadNotes(widget.lesson.subject).then((value) {
+    ScheduleNotes().loadNotes(widget.lesson.subject).then((value) {
       setState(() {
         savedNotes = value;
       });
@@ -279,7 +238,7 @@ class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
             classroom; // Создайте новую переменную для изменяемого значения кабинета
 
         return AlertDialog(
-          title: Text('Изменить кабинет'),
+          title: const Text('Изменить кабинет'),
           content: TextField(
             controller: _classroomController,
             style: TextStyle(color: Theme.of(context).colorScheme.background),
@@ -288,7 +247,28 @@ class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
                   value; // Обновление нового значения кабинета при вводе в TextField
             },
             decoration: InputDecoration(
-              hintText: 'Введите новый кабинет...',
+              labelText: 'Введите номер кабинета',
+              hintText: 'Номер кабинета...',
+              labelStyle: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .secondary), // Customize the label text style
+              hintStyle: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .background), // Customize the hint text style
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary), // Customize the border color
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary), // Customize the focused border color
+              ),
             ),
           ),
           actions: [
@@ -308,12 +288,14 @@ class _TeacherLessonDetailsPageState extends State<TeacherLessonDetailsPage> {
                   classroom =
                       newClassroom; // Обновление значения кабинета после сохранения
                 });
-                debugPrint(classroom);
+
                 GetScheduleRepositories().editClassroom(
+                    widget.day,
                     widget.lesson.groups,
                     widget.lesson.subject,
                     widget.lesson.numberPair,
                     _classroomController);
+                _classroomController.clear();
                 Navigator.of(context).pop();
               },
               child: Text(

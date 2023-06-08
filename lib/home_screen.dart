@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:ncti/repository/ncti_repository.dart';
-import 'package:ncti/routes/router.dart';
-import 'package:ncti/theme_changer.dart';
+import '/repository/ncti_repository.dart';
+import '/routes/router.dart';
+import '/theme_changer.dart';
 import 'package:provider/provider.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
+import 'drawer/permisions_modal.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -40,6 +42,7 @@ class _HomePageState extends State<HomePage> {
         if (authorities.contains('ROLE_STUDENT')) {
           GetUser().getStudent().then((data) {
             Map<String, dynamic> result = jsonDecode(data);
+            if (!mounted) return;
             setState(() {
               isLoading = false;
               dataUser = result;
@@ -48,6 +51,7 @@ class _HomePageState extends State<HomePage> {
         } else if (authorities.contains('ROLE_TEACHER')) {
           GetUser().getTeacher().then((data) {
             Map<String, dynamic> result = jsonDecode(data);
+            if (!mounted) return;
             setState(() {
               isLoading = false;
               dataUser = result;
@@ -148,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 onTap: () {
-                  AutoRouter.of(context).push(TimeScheduleRoute());
+                  AutoRouter.of(context).push(const TimeScheduleRoute());
                 },
               ),
               ListTile(
@@ -159,6 +163,21 @@ class _HomePageState extends State<HomePage> {
                 ),
                 onTap: () {
                   AutoRouter.of(context).push(const ChangePasswordRoute());
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.notification_add_outlined),
+                title: Text(
+                  'Включить уведомления',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return PermissionsModal();
+                    },
+                  );
                 },
               ),
               ListTile(
