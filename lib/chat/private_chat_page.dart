@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:ncti/chat/chat_repository.dart';
 
-import 'Window/add_user_chat.dart';
 import '/repository/ncti_repository.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -138,17 +137,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                       : AppTheme.chatLight,
                 ),
               ));
-  }
-
-  void _openAddGroupChatModal(BuildContext context) {
-    showModalBottomSheet(
-      useSafeArea: true,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) {
-        return AddUserChat(chatId: widget.group.id);
-      },
-    );
   }
 
   @override

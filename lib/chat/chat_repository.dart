@@ -70,7 +70,7 @@ class GetChat {
 
   Future createChat(String name, List<int> selectedUser) async {
     String? accessToken = await GetToken().getAccessToken();
-    final url = Uri.parse('$SERVER/chats/create/');
+    final url = Uri.parse('$SERVER/chats/create-public');
     final response = await http.post(
       url,
       body: jsonEncode({"name": name, "ids": selectedUser}),
