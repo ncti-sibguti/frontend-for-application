@@ -19,7 +19,6 @@ class GroupLessonsPage extends StatefulWidget {
 class _GroupLessonsPageState extends State<GroupLessonsPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       selectedDay = daysOfWeek[weekdayInt];
@@ -123,6 +122,10 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(widget.group.name),
+      ),
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(

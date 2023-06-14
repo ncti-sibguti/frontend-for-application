@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ncti/chat/chat_repository.dart';
+import 'package:ncti/maps/model/student.dart';
 import '/repository/ncti_repository.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
@@ -123,7 +124,7 @@ class _CreateGroupChatModalState extends State<CreateGroupChatModal> {
                 items: _filteredUsers
                     .map((user) => MultiSelectItem<User>(
                           user,
-                          '${user.firstName} ${user.lastName}',
+                          '${user.firstname} ${user.lastname}',
                         ))
                     .toList(),
                 title: Text(

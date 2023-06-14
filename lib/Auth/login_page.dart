@@ -172,21 +172,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 )
-                // TextButton(
-                //     onPressed: () async {
-                //       final prefs = await SharedPreferences.getInstance();
-                //       await prefs.setString('refreshToken',
-                //           'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhMTY5ODI3MyIsImlzcyI6Im5jdGktYmFja2VuZCIsImV4cCI6MTY4NDMwMTI4MCwiaWF0IjoxNjgzMDkxNjgwfQ.ZXmYOclheUXlA9Q916PJDNcm2_0dLSn3Dyp2eyJ3UB5kBioQyFDywlVOEMItCm5_FNC7WZ4XRbKl1As7_xBHmA');
-                //     },
-                //     child: Text('SetToken')),
-                // TextButton(
-                //   onPressed: () {
-                //     AutoRouter.of(context).pushAndPopUntil(HomeRoute(),
-                //         predicate: (route) => route.settings.name == '/home');
-                //   },
-                //   child:
-                //       Text(style: Theme.of(context).textTheme.bodyMedium, 'Home'),
-                // ),
               ],
             ),
           ),

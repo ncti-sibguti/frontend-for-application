@@ -1,139 +1,235 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import '/notifications/message_list.dart';
-import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-import '../notifications/permissions.dart';
-import '../notifications/token_monitor.dart';
-import '../main.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:ncti/drawer/permisions_modal.dart';
+import 'package:ncti/theme_changer.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+import 'package:flutter/material.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:ncti/chat/chat_repository.dart';
+import 'package:ncti/maps/model/student.dart';
+import 'package:ncti/repository/ncti_repository.dart';
+import 'package:ncti/routes/router.dart';
 
 @RoutePage()
 class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+  const UserPage({super.key, required this.id});
+
+  final int id;
 
   @override
   State<UserPage> createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
-  String? _token;
-  String? initialMessage;
-  bool _resolved = false;
+  User? dataUser;
+  bool isLoading = true;
+  bool isTeacher = false;
+  bool isI = false;
 
   @override
   void initState() {
     super.initState();
+    getUser();
+  }
 
-    FirebaseMessaging.instance.getInitialMessage().then(
-          (value) => setState(
-            () {
-              _resolved = true;
-              initialMessage = value?.data.toString();
-            },
-          ),
-        );
+  void getUser() async {
+    int? id;
+    GetToken().getAccessToken().then((value) {
+      String? result = value;
+      if (result != null) {
+        final jwtToken = Jwt.parseJwt(result);
 
-    FirebaseMessaging.onMessage.listen(showFlutterNotification);
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
+        id = jwtToken['user_id'];
+      }
+      if (widget.id == id) {
+        setState(() {
+          isI = true;
+        });
+      }
+    });
+    GetUser().getUser(widget.id.toString()).then((value) {
+      User respon = User.fromJson(jsonDecode(value));
+      setState(() {
+        dataUser = respon;
+        isLoading = false;
+      });
     });
   }
 
-  Future<void> sendPushMessage() async {
-    if (_token == null) {
-      print('Unable to send FCM message, no token exists.');
-      return;
-    }
-
-    try {
-      await http.post(
-        Uri.parse('https://api.rnfirebase.io/messaging/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: constructFCMPayload(_token),
-      );
-      print('FCM request for device sent!');
-    } catch (e) {
-      print(e);
-    }
-  }
+  final List<String> items = [
+    'Календарь',
+    'Расписание звонков',
+    'Пользователи',
+    'Включить уведомления',
+    'Сменить пароль',
+    'Сменить тему',
+    'Выйти'
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeModel>(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            MetaCard('Permissions', Permissions()),
-            MetaCard(
-              'Initial Message',
-              Column(
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            ))
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_resolved ? 'Resolved' : 'Resolving'),
-                  Text(initialMessage ?? 'None'),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CircleAvatar(
+                        radius: 50.0,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        backgroundImage: AssetImage('assets/images/user.png'),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              dataUser!.lastname,
+                              style: TextStyle(
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              dataUser!.firstname,
+                              style: TextStyle(
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            ),
+                            const SizedBox(height: 8.0),
+                            ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: dataUser!.role.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final role = dataUser!.role[index];
+                                  return Center(
+                                    child: Text(
+                                      role['description'],
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
+                                    ),
+                                  );
+                                }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  isI
+                      ? Expanded(
+                          child: ListView.builder(
+                            itemCount: items.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                color: Theme.of(context).cardColor,
+                                child: ListTile(
+                                  title: Text(
+                                    items[index],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    switch (index) {
+                                      case 0:
+                                        AutoRouter.of(context)
+                                            .push(const CalendarRoute());
+                                        break;
+                                      case 1:
+                                        AutoRouter.of(context)
+                                            .push(const TimeScheduleRoute());
+                                        break;
+                                      case 2:
+                                        AutoRouter.of(context)
+                                            .push(const UserListRoute());
+                                        break;
+                                      case 3:
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return PermissionsModal();
+                                          },
+                                        );
+                                        break;
+                                      case 4:
+                                        AutoRouter.of(context)
+                                            .push(ChangePasswordRoute());
+                                        break;
+                                      case 5:
+                                        themeProvider.toggleTheme();
+                                        break;
+                                      case 6:
+                                        NotificationRep().deleteToken();
+                                        GetToken().removeToken();
+
+                                        AutoRouter.of(context).pushAndPopUntil(
+                                            const LoginRoute(),
+                                            predicate: (route) =>
+                                                route.settings.name ==
+                                                '/login');
+                                        break;
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Card(
+                          child: ListTile(
+                          title: Text(
+                            'Написать сообщение',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          onTap: () {
+                            if (dataUser!.chat != null) {
+                              AutoRouter.of(context).push(PrivateChatRoute(
+                                  group: Group(
+                                      id: dataUser!.chat!,
+                                      name:
+                                          '${dataUser!.firstname} ${dataUser!.lastname}',
+                                      type: 'PRIVATE'),
+                                  chatId: dataUser!.chat!));
+                            } else {
+                              String _id = Uuid().v4();
+                              AutoRouter.of(context).push(CreatePrivateChatRoute(
+                                  group: Group(
+                                      id: _id,
+                                      name:
+                                          '${dataUser!.firstname} ${dataUser!.lastname}',
+                                      type: 'PRIVATE'),
+                                  chatId: _id,
+                                  email: dataUser!.email));
+                            }
+                          },
+                        ))
                 ],
               ),
             ),
-            MetaCard(
-              'FCM Token',
-              TokenMonitor((token) {
-                _token = token;
-                return token == null
-                    ? const CircularProgressIndicator()
-                    : SelectableText(
-                        token,
-                        style: const TextStyle(fontSize: 12),
-                      );
-              }),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                FirebaseMessaging.instance
-                    .getInitialMessage()
-                    .then((RemoteMessage? message) {
-                  if (message != null) {}
-                });
-              },
-              child: const Text('getInitialMessage()'),
-            ),
-            MetaCard('Message Stream', MessageList()),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// UI Widget for displaying metadata.
-class MetaCard extends StatelessWidget {
-  final String _title;
-  final Widget _children;
-
-  // ignore: public_member_api_docs
-  MetaCard(this._title, this._children);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(left: 8, right: 8, top: 8),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Text(_title, style: const TextStyle(fontSize: 18)),
-              ),
-              _children,
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

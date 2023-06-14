@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
-import '/repository/ncti_repository.dart';
-import '/schedule/schedule_page.dart';
-import '/maps/user_page.dart';
-import '/drawer/calendar/calendar.dart';
-import '/chat/chats_page.dart';
-import '/chat/public_chat_page.dart';
+import 'package:ncti/chat/Window/create_private_chat_page.dart';
 
-import '/drawer/change_password.dart';
-import '/drawer/time_schedule.dart';
+import 'package:ncti/chat/chat_repository.dart';
+import 'package:ncti/maps/list_user.dart';
 
-import '/Auth/login_page.dart';
-import '/schedule/widgets/button_page.dart';
-import '/schedule/group_lesson.dart';
+import 'package:ncti/repository/ncti_repository.dart';
 
-import '/home_screen.dart';
+import 'package:ncti/maps/user_page.dart';
+
+import 'package:ncti/chat/chats_page.dart';
+import 'package:ncti/chat/public_chat_page.dart';
+import 'package:ncti/chat/private_chat_page.dart';
+
+import 'package:ncti/drawer/change_password.dart';
+import 'package:ncti/drawer/calendar/calendar.dart';
+import 'package:ncti/drawer/time_schedule.dart';
+
+import 'package:ncti/auth/login_page.dart';
+
+import 'package:ncti/home_screen.dart';
 import 'package:auto_route/auto_route.dart';
 
+import '/schedule/schedule_page.dart';
+import '/schedule/group_lesson.dart';
 import '/schedule/lesson_details.dart';
+import '/schedule/widgets/button_page.dart';
 
 part 'router.gr.dart';
 
@@ -26,12 +34,10 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
     if (await AuthorizationRepositories().isLogin() ||
         resolver.route.name == LoginRoute.name) {
-      // debugPrint('AuthGuard True');
-      // we continue navigation
+      //мы продолжаем навигацию
       resolver.next();
     } else {
-      // debugPrint('AuthGuard False');
-      // else we navigate to the Login page so we get authenticateed
+      // в противном случае мы переходим на страницу входа, чтобы пройти аутентификацию.
       push(const LoginRoute());
     }
   }
@@ -41,7 +47,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         AutoRoute(path: '/', page: HomeRoute.page, initial: true, children: [
           AutoRoute(page: ScheduleRoute.page, initial: true),
           AutoRoute(page: UserRoute.page),
-          AutoRoute(page: ChatRoute.page),
+          AutoRoute(page: ChatRoute.page, path: 'chat'),
         ]),
 //schedule
         AutoRoute(page: LessonDetailsRoute.page),
@@ -51,11 +57,15 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
 
         //chat
         AutoRoute(page: PublicChatRoute.page),
+        AutoRoute(page: PrivateChatRoute.page),
+
+        AutoRoute(page: CreatePrivateChatRoute.page),
 
         //drawer
         AutoRoute(page: CalendarRoute.page),
         AutoRoute(page: ChangePasswordRoute.page),
         AutoRoute(page: LoginRoute.page),
-        AutoRoute(page: TimeScheduleRoute.page)
+        AutoRoute(page: TimeScheduleRoute.page),
+        AutoRoute(page: UserListRoute.page),
       ];
 }

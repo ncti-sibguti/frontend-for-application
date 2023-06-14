@@ -83,7 +83,9 @@ class _SchedulePageState extends State<SchedulePage> {
     "Суббота"
   ];
 
-  static int weekdayInt = (DateTime.now().weekday - 1);
+  static int weekdayInt =
+      DateTime.now().weekday == 7 ? 1 : DateTime.now().weekday - 1;
+
   String? selectedDay;
   final PageController _pageController =
       PageController(initialPage: weekdayInt);

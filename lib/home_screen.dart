@@ -1,15 +1,12 @@
-import 'dart:convert';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:ncti/notifications/notification_service.dart';
 import '/repository/ncti_repository.dart';
 import '/routes/router.dart';
 import '/theme_changer.dart';
 import 'package:provider/provider.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-
-import 'drawer/permisions_modal.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -20,178 +17,64 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    UpdateToken().updateToken();
-  }
-
-  dynamic dataUser = '';
+  int? id;
   bool isLoading = true;
 
-  void getUser() async {
+  void getId() async {
     GetToken().getAccessToken().then((value) {
-      String? result = value;
-      if (result != null) {
-        final jwtToken = Jwt.parseJwt(result);
-        List<dynamic> roles = jwtToken['role'];
-        List<String> authorities = [];
-        for (var role in roles) {
-          authorities.add(role['authority']);
-        }
-        if (authorities.contains('ROLE_STUDENT')) {
-          GetUser().getStudent().then((data) {
-            Map<String, dynamic> result = jsonDecode(data);
-            if (!mounted) return;
-            setState(() {
-              isLoading = false;
-              dataUser = result;
-            });
-          });
-        } else if (authorities.contains('ROLE_TEACHER')) {
-          GetUser().getTeacher().then((data) {
-            Map<String, dynamic> result = jsonDecode(data);
-            if (!mounted) return;
-            setState(() {
-              isLoading = false;
-              dataUser = result;
-            });
-          });
-        }
+      if (value != null) {
+        final jwtToken = Jwt.parseJwt(value);
+
+        id = jwtToken['user_id'];
+
+        setState(() {
+          isLoading = false;
+        });
       }
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    getId();
+    UpdateToken().updateToken();
+    NotificationServices().requestNotificationPermission();
+    NotificationServices().forgroundMessage();
+    NotificationServices().firebaseInit(context);
+    NotificationServices().setupInteractMessage(context);
+    NotificationServices().isTokenRefresh();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeModel>(context);
-
     if (isLoading) {
-      getUser();
-      return AutoTabsScaffold(
-        routes: const [ScheduleRoute(), ChatRoute(), UserRoute()],
-        appBarBuilder: (_, tabsRouter) => AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          centerTitle: true,
-          title: const Text('КТИ СибГУТИ'),
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
-        bottomNavigationBuilder: (_, tabsRouter) => SalomonBottomBar(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            margin: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 10,
-            ),
-            currentIndex: tabsRouter.activeIndex,
-            onTap: tabsRouter.setActiveIndex,
-            items: [
-              SalomonBottomBarItem(
-                  icon: const Icon(Icons.schedule_outlined),
-                  title: const Text('Расписание')),
-              SalomonBottomBarItem(
-                  icon: const Icon(Icons.message_outlined),
-                  title: const Text('Чат')),
-              SalomonBottomBarItem(
-                  icon: const Icon(Icons.map_outlined),
-                  title: const Text('Карта'))
-            ]),
       );
     } else {
       return AutoTabsScaffold(
-        routes: const [ScheduleRoute(), ChatRoute(), UserRoute()],
+        routes: [ScheduleRoute(), ChatRoute(), UserRoute(id: id!)],
         appBarBuilder: (_, tabsRouter) => AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           centerTitle: true,
           title: const Text('КТИ СибГУТИ'),
-        ),
-        endDrawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration:
-                    BoxDecoration(color: Theme.of(context).primaryColor),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircleAvatar(
-                      radius: 35,
-                      child: Icon(Icons.person_outline_outlined),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '${dataUser['lastname']} ${dataUser['firstname']}',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    Text('${dataUser['email']}',
-                        style: Theme.of(context).textTheme.labelLarge),
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: Icon(Theme.of(context).brightness == Brightness.dark
-                    ? Icons.wb_sunny_outlined
-                    : Icons.nights_stay_outlined),
-                title: Text('Сменить тему',
-                    style: Theme.of(context).textTheme.bodyMedium),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
                 onTap: () {
                   themeProvider.toggleTheme();
                 },
+                child: Icon(Theme.of(context).brightness == Brightness.dark
+                    ? Icons.wb_sunny_outlined
+                    : Icons.nights_stay_outlined),
               ),
-              ListTile(
-                leading: const Icon(Icons.calendar_month_outlined),
-                title: Text('Календарь',
-                    style: Theme.of(context).textTheme.bodyMedium),
-                onTap: () {
-                  AutoRouter.of(context).push(const CalendarRoute());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.schedule_outlined),
-                title: Text(
-                  'Расписание звонков',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                onTap: () {
-                  AutoRouter.of(context).push(const TimeScheduleRoute());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.password_outlined),
-                title: Text(
-                  'Смена пароля',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                onTap: () {
-                  AutoRouter.of(context).push(const ChangePasswordRoute());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.notification_add_outlined),
-                title: Text(
-                  'Включить уведомления',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return PermissionsModal();
-                    },
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.door_sliding_outlined),
-                title: Text('Выйти',
-                    style: Theme.of(context).textTheme.bodyMedium),
-                onTap: () {
-                  GetToken().removeToken();
-                  AutoRouter.of(context).pushAndPopUntil(const LoginRoute(),
-                      predicate: (route) => route.settings.name == '/login');
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         bottomNavigationBuilder: (_, tabsRouter) => SalomonBottomBar(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -209,8 +92,8 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(Icons.message_outlined),
                   title: const Text('Чат')),
               SalomonBottomBarItem(
-                  icon: const Icon(Icons.map_outlined),
-                  title: const Text('Карта'))
+                  icon: const Icon(Icons.cabin_outlined),
+                  title: const Text('Личный кабинет'))
             ]),
       );
     }

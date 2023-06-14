@@ -27,6 +27,17 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ChatPage(),
       );
     },
+    PrivateChatRoute.name: (routeData) {
+      final args = routeData.argsAs<PrivateChatRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: PrivateChatPage(
+          key: args.key,
+          group: args.group,
+          chatId: args.chatId,
+        ),
+      );
+    },
     PublicChatRoute.name: (routeData) {
       final args = routeData.argsAs<PublicChatRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -35,8 +46,6 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           chatId: args.chatId,
           group: args.group,
-          accessToken: args.accessToken,
-          id: args.id,
         ),
       );
     },
@@ -65,9 +74,13 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     UserRoute.name: (routeData) {
+      final args = routeData.argsAs<UserRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const UserPage(),
+        child: UserPage(
+          key: args.key,
+          id: args.id,
+        ),
       );
     },
     GroupLessonsRoute.name: (routeData) {
@@ -98,6 +111,24 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const ButtonPage(),
+      );
+    },
+    UserListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const UserListPage(),
+      );
+    },
+    CreatePrivateChatRoute.name: (routeData) {
+      final args = routeData.argsAs<CreatePrivateChatRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CreatePrivateChatPage(
+          key: args.key,
+          group: args.group,
+          chatId: args.chatId,
+          email: args.email,
+        ),
       );
     },
   };
@@ -132,14 +163,56 @@ class ChatRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [PrivateChatPage]
+class PrivateChatRoute extends PageRouteInfo<PrivateChatRouteArgs> {
+  PrivateChatRoute({
+    Key? key,
+    required Group group,
+    required String chatId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PrivateChatRoute.name,
+          args: PrivateChatRouteArgs(
+            key: key,
+            group: group,
+            chatId: chatId,
+          ),
+          rawPathParams: {'chatId': chatId},
+          initialChildren: children,
+        );
+
+  static const String name = 'PrivateChatRoute';
+
+  static const PageInfo<PrivateChatRouteArgs> page =
+      PageInfo<PrivateChatRouteArgs>(name);
+}
+
+class PrivateChatRouteArgs {
+  const PrivateChatRouteArgs({
+    this.key,
+    required this.group,
+    required this.chatId,
+  });
+
+  final Key? key;
+
+  final Group group;
+
+  final String chatId;
+
+  @override
+  String toString() {
+    return 'PrivateChatRouteArgs{key: $key, group: $group, chatId: $chatId}';
+  }
+}
+
+/// generated route for
 /// [PublicChatPage]
 class PublicChatRoute extends PageRouteInfo<PublicChatRouteArgs> {
   PublicChatRoute({
     Key? key,
     required String chatId,
     required Group group,
-    required String accessToken,
-    required String id,
     List<PageRouteInfo>? children,
   }) : super(
           PublicChatRoute.name,
@@ -147,8 +220,6 @@ class PublicChatRoute extends PageRouteInfo<PublicChatRouteArgs> {
             key: key,
             chatId: chatId,
             group: group,
-            accessToken: accessToken,
-            id: id,
           ),
           rawPathParams: {'chatId': chatId},
           initialChildren: children,
@@ -165,8 +236,6 @@ class PublicChatRouteArgs {
     this.key,
     required this.chatId,
     required this.group,
-    required this.accessToken,
-    required this.id,
   });
 
   final Key? key;
@@ -175,13 +244,9 @@ class PublicChatRouteArgs {
 
   final Group group;
 
-  final String accessToken;
-
-  final String id;
-
   @override
   String toString() {
-    return 'PublicChatRouteArgs{key: $key, chatId: $chatId, group: $group, accessToken: $accessToken, id: $id}';
+    return 'PublicChatRouteArgs{key: $key, chatId: $chatId, group: $group}';
   }
 }
 
@@ -243,16 +308,39 @@ class HomeRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [UserPage]
-class UserRoute extends PageRouteInfo<void> {
-  const UserRoute({List<PageRouteInfo>? children})
-      : super(
+class UserRoute extends PageRouteInfo<UserRouteArgs> {
+  UserRoute({
+    Key? key,
+    required int id,
+    List<PageRouteInfo>? children,
+  }) : super(
           UserRoute.name,
+          args: UserRouteArgs(
+            key: key,
+            id: id,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'UserRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<UserRouteArgs> page = PageInfo<UserRouteArgs>(name);
+}
+
+class UserRouteArgs {
+  const UserRouteArgs({
+    this.key,
+    required this.id,
+  });
+
+  final Key? key;
+
+  final int id;
+
+  @override
+  String toString() {
+    return 'UserRouteArgs{key: $key, id: $id}';
+  }
 }
 
 /// generated route for
@@ -353,4 +441,67 @@ class ButtonRoute extends PageRouteInfo<void> {
   static const String name = 'ButtonRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [UserListPage]
+class UserListRoute extends PageRouteInfo<void> {
+  const UserListRoute({List<PageRouteInfo>? children})
+      : super(
+          UserListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'UserListRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CreatePrivateChatPage]
+class CreatePrivateChatRoute extends PageRouteInfo<CreatePrivateChatRouteArgs> {
+  CreatePrivateChatRoute({
+    Key? key,
+    required Group group,
+    required String chatId,
+    required String email,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CreatePrivateChatRoute.name,
+          args: CreatePrivateChatRouteArgs(
+            key: key,
+            group: group,
+            chatId: chatId,
+            email: email,
+          ),
+          rawPathParams: {'chatId': chatId},
+          initialChildren: children,
+        );
+
+  static const String name = 'CreatePrivateChatRoute';
+
+  static const PageInfo<CreatePrivateChatRouteArgs> page =
+      PageInfo<CreatePrivateChatRouteArgs>(name);
+}
+
+class CreatePrivateChatRouteArgs {
+  const CreatePrivateChatRouteArgs({
+    this.key,
+    required this.group,
+    required this.chatId,
+    required this.email,
+  });
+
+  final Key? key;
+
+  final Group group;
+
+  final String chatId;
+
+  final String email;
+
+  @override
+  String toString() {
+    return 'CreatePrivateChatRouteArgs{key: $key, group: $group, chatId: $chatId, email: $email}';
+  }
 }

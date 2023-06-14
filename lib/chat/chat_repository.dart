@@ -1,10 +1,35 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ncti/repository/ncti_repository.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:ncti/repository/ncti_repository.dart';
+
+class Group {
+  String id;
+  String name;
+  String type;
+
+  Group({
+    required this.id,
+    required this.name,
+    required this.type,
+  });
+
+  factory Group.fromJson(Map<String, dynamic> json) {
+    return Group(
+      id: json['id'],
+      name: json['name'],
+      type: json['type'],
+    );
+  }
+}
+
+List<Group> parseGroups(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed.map<Group>((json) => Group.fromJson(json)).toList();
+}
 
 class GetChat {
   Future getChats() async {
@@ -24,9 +49,9 @@ class GetChat {
     }
   }
 
-  Future getMessages(String chatId) async {
+  Future getMessages(String chatId, String type) async {
     String? accessToken = await GetToken().getAccessToken();
-    String url = "$SERVER/chats/$chatId";
+    String url = "$SERVER/chats/$chatId?type=$type";
     final response = await http.get(Uri.parse(url), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken'
@@ -36,6 +61,7 @@ class GetChat {
       final messages = (jsonDecode(responseBody) as List)
           .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
           .toList();
+
       return messages;
     } else {
       throw Exception('failed to load chat');

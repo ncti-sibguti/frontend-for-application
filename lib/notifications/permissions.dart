@@ -77,8 +77,28 @@ class _Permissions extends State<Permissions> {
 
     if (!_requested) {
       return ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).colorScheme.secondary), // Цвет фона кнопки
+            foregroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).colorScheme.background), // Цвет текста кнопки
+            textStyle: MaterialStateProperty.all<TextStyle>(
+              TextStyle(fontSize: 16), // Размер текста кнопки
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 10), // Отступы кнопки
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(8), // Радиус закругления углов кнопки
+              ),
+            ),
+          ),
           onPressed: requestPermissions,
-          child: const Text('Разрешить уведомления'));
+          child: Text('Разрешить уведомления',
+              style: TextStyle(color: Colors.white)));
     }
 
     return Column(children: [
@@ -94,7 +114,30 @@ class _Permissions extends State<Permissions> {
         row('Sound', settingsMap[_settings.sound]!),
       ],
       ElevatedButton(
-          onPressed: checkPermissions, child: const Text('Обновить запрос')),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).colorScheme.secondary), // Цвет фона кнопки
+            foregroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).colorScheme.background), // Цвет текста кнопки
+            textStyle: MaterialStateProperty.all<TextStyle>(
+              TextStyle(fontSize: 16), // Размер текста кнопки
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 10), // Отступы кнопки
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(8), // Радиус закругления углов кнопки
+              ),
+            ),
+          ),
+          onPressed: checkPermissions,
+          child: Text(
+            'Обновить запрос',
+            style: TextStyle(color: Colors.white),
+          )),
     ]);
   }
 }

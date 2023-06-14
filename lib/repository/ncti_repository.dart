@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:ncti/maps/model/student.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +22,24 @@ class NotificationRep {
     debugPrint('отправлено $token');
 
     final url = Uri.parse('$SERVER/user/fcm-token');
+    final response = await http.post(
+      url,
+      body: jsonEncode({'token': token}),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+    debugPrint(response.body);
+  }
+
+  Future<void> deleteToken() async {
+    String? accessToken = await GetToken().getAccessToken();
+
+    String? token = await FirebaseMessaging.instance.getToken();
+    debugPrint('удалено $token');
+
+    final url = Uri.parse('$SERVER/auth/logout');
     final response = await http.post(
       url,
       body: jsonEncode({'token': token}),
@@ -167,6 +186,22 @@ class UpdateToken {
 }
 
 class GetUser {
+  Future<String> getUser(String userId) async {
+    String? accessToken = await GetToken().getAccessToken();
+    String url = "$SERVER/user/users/$userId";
+    final response = await http.get(Uri.parse(url), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $accessToken'
+    });
+    if (response.statusCode == 200) {
+      final responseBody = utf8.decode(response.bodyBytes);
+      debugPrint(responseBody);
+      return responseBody;
+    } else {
+      throw Exception('Failed to load student');
+    }
+  }
+
   Future<String> getStudent() async {
     String? accessToken = await GetToken().getAccessToken();
     String url = "$SERVER/student/profile";
@@ -176,7 +211,7 @@ class GetUser {
     });
     if (response.statusCode == 200) {
       final responseBody = utf8.decode(response.bodyBytes);
-
+      debugPrint(responseBody);
       return responseBody;
     } else {
       throw Exception('Failed to load student');
@@ -209,6 +244,7 @@ class GetUser {
 
     if (response.statusCode == 200) {
       final responseBody = utf8.decode(response.bodyBytes);
+      debugPrint(responseBody);
       final respon = parseUsers(responseBody);
       // debugPrint(respon.toString());
       return respon;
@@ -253,63 +289,33 @@ class ScheduleGroup {
   }
 }
 
-class Group {
-  String id;
-  String name;
-  int userCount;
-  // String type;
+// class User {
+//   int id;
+//   String firstName;
+//   String lastName;
+//   String surname;
+//   String email;
 
-  Group({
-    required this.id,
-    required this.name,
-    required this.userCount,
-    // required this.type
-  });
+//   User({
+//     required this.id,
+//     required this.firstName,
+//     required this.lastName,
+//     required this.surname,
+//     required this.email,
+//   });
 
-  factory Group.fromJson(Map<String, dynamic> json) {
-    return Group(
-      id: json['id'],
-      name: json['name'],
-      userCount: json['userCount'],
-      // type: json['type'],
-    );
-  }
-}
+//   factory User.fromJson(Map<String, dynamic> json) {
+//     return User(
+//       id: json['id'],
+//       firstName: json['firstname'],
+//       lastName: json['lastname'],
+//       surname: json['surname'],
+//       email: json['email'],
+//     );
+//   }
+// }
 
-List<Group> parseGroups(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-  return parsed.map<Group>((json) => Group.fromJson(json)).toList();
-}
-
-class User {
-  int id;
-  String firstName;
-  String lastName;
-  String surname;
-  String email;
-  String username;
-
-  User(
-      {required this.id,
-      required this.firstName,
-      required this.lastName,
-      required this.surname,
-      required this.email,
-      required this.username});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'],
-      firstName: json['firstname'],
-      lastName: json['lastname'],
-      surname: json['surname'],
-      email: json['email'],
-      username: json['username'],
-    );
-  }
-}
-
-List<User> parseUsers(String jsonString) {
-  final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
-  return parsed.map<User>((json) => User.fromJson(json)).toList();
-}
+// List<User> parseUsers(String jsonString) {
+//   final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
+//   return parsed.map<User>((json) => User.fromJson(json)).toList();
+// }

@@ -17,7 +17,6 @@ class _ButtonPageState extends State<ButtonPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     GetUser().getAllGroup().then((data) {
       setState(() {

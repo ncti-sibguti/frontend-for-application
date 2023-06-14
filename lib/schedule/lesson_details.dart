@@ -42,127 +42,141 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
       body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Text(
-                  '${widget.lesson.numberPair}-я пара',
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Предмет: ${widget.lesson.subject}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  widget.isTeacher
-                      ? widget.lesson.groups.join(', ')
-                      : widget.lesson.teachers
-                          .map((e) =>
-                              '${e.lastname} ${e.firstname} ${e.surname}')
-                          .join(', \n'),
+              child: ListView(children: [
+            Text(
+              '${widget.lesson.numberPair}-я пара',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              'Предмет: ${widget.lesson.subject}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              widget.isTeacher
+                  ? 'Группы: ${widget.lesson.groups.join(', ')}'
+                  : widget.lesson.teachers
+                      .map((e) => '${e.lastname} ${e.firstname} ${e.surname}')
+                      .join(', \n'),
+              style: TextStyle(
+                  fontSize: 18.0,
+                  color: Theme.of(context).colorScheme.secondary),
+            ),
+            const SizedBox(height: 16.0),
+            ListTile(
+              title: Text(
+                'Аудитория: ${widget.lesson.classroom}',
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.secondary),
+              ),
+              trailing: widget.isTeacher
+                  ? IconButton(
+                      onPressed: () => _editClassroom(context),
+                      icon: const Icon(Icons.edit_outlined))
+                  : null,
+            ),
+            const SizedBox(height: 16.0),
+            getScheduleItemByNumberPair(context, widget.lesson.numberPair),
+            const SizedBox(height: 16.0),
+            const Text(
+              "Заметки:",
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 16.0),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: savedNotes.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(
+                    savedNotes[index].note,
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).colorScheme.background),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => ScheduleNotes()
+                        .deleteNotes(widget.lesson.subject, savedNotes[index]),
+                  ),
+                  leading: const Icon(Icons.notes_outlined),
+                );
+              },
+            ),
+            ListTile(
+                title: Text(
+                  'Добавить заметку',
                   style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 18,
                       color: Theme.of(context).colorScheme.secondary),
                 ),
-                const SizedBox(height: 16.0),
-                Row(children: [
-                  Text(
-                    'Аудитория: ${widget.lesson.classroom}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  if (widget.isTeacher)
-                    IconButton(
-                        onPressed: () => _editClassroom(context),
-                        icon: const Icon(Icons.edit_outlined))
-                ]),
-                const SizedBox(height: 16.0),
-                getScheduleItemByNumberPair(context, widget.lesson.numberPair),
-                const SizedBox(height: 16.0),
-                Text(
-                  "Заметки по ${widget.lesson.subject}:",
-                  style: const TextStyle(fontSize: 18),
+                trailing: Icon(
+                  Icons.add_outlined,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
-                const SizedBox(height: 16.0),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: savedNotes.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      title: Text(
-                        savedNotes[index].note,
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.secondary),
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete_outline),
-                        onPressed: () => ScheduleNotes().deleteNotes(
-                            widget.lesson.subject, savedNotes[index]),
-                      ),
-                      leading: Icon(Icons.notes_outlined),
-                    );
-                  },
-                ),
-              ]))),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              List<Note> notes =
-                  List.from(savedNotes.map((note) => Note(note: note.note)));
+                onTap: () => addNote(context))
+          ]))),
+    );
+  }
 
-              return AlertDialog(
-                title: Text('Добавить заметки для ${widget.lesson.subject}'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 16.0),
-                    TextField(
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.background),
-                      onChanged: (value) {
-                        setState(() {
-                          newNote = value;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Введите заметку...',
-                      ),
-                    ),
-                  ],
+  Future<dynamic> addNote(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        List<Note> notes =
+            List.from(savedNotes.map((note) => Note(note: note.note)));
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 5.0,
+          title: const Text('Добавить заметку'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 16.0),
+              TextField(
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.background),
+                onChanged: (value) {
+                  setState(() {
+                    newNote = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Введите заметку...',
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      'Отмена',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.background),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      notes.add(Note(note: newNote));
-                      _saveNotes(widget.lesson.subject, notes);
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Сохранить',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.background)),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Отмена',
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.background),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                notes.add(Note(note: newNote));
+                _saveNotes(widget.lesson.subject, notes);
+                Navigator.of(context).pop();
+              },
+              child: Text('Сохранить',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.background)),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -182,7 +196,6 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
         style: TextStyle(
             color: Theme.of(context).colorScheme.secondary, fontSize: 20),
       ),
-      onTap: () {},
     );
   }
 

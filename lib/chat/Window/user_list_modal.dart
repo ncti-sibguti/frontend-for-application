@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/repository/ncti_repository.dart';
+import 'package:ncti/maps/model/student.dart';
 
 class UserListModal extends StatefulWidget {
   final List<User> users;
@@ -30,8 +30,8 @@ class _UserListModalState extends State<UserListModal> {
       searchQuery = query;
       filteredList = widget.users
           .where((user) =>
-              user.firstName.toLowerCase().contains(query.toLowerCase()) ||
-              user.lastName.toLowerCase().contains(query.toLowerCase()))
+              user.firstname.toLowerCase().contains(query.toLowerCase()) ||
+              user.lastname.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -62,7 +62,7 @@ class _UserListModalState extends State<UserListModal> {
 
                 return ListTile(
                   title: Text(
-                    '${user.firstName} ${user.lastName}',
+                    '${user.firstname} ${user.lastname}',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary),
                   ),

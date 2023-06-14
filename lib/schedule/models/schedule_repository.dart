@@ -57,7 +57,7 @@ class GetScheduleRepositories {
       final responseBody = utf8.decode(response.bodyBytes);
 
       final jsonData = deserializeStudentLessons(responseBody);
-      debugPrint(jsonData.toString());
+
       return jsonData;
     } else {
       throw Exception('Failed to  student schedule');

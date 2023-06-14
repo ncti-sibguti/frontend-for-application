@@ -19,31 +19,30 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:stomp_dart_client/stomp_handler.dart';
 
 @RoutePage()
-class PublicChatPage extends StatefulWidget {
-  const PublicChatPage({
-    super.key,
-    @PathParam('chatId') required this.chatId,
-    required this.group,
-  });
-  final String chatId;
+class PrivateChatPage extends StatefulWidget {
+  const PrivateChatPage(
+      {super.key,
+      required this.group,
+      @PathParam('chatId') required this.chatId});
+
   final Group group;
+  final String chatId;
 
   @override
-  State<PublicChatPage> createState() => _PublicChatPageState();
+  State<PrivateChatPage> createState() => _PrivateChatPageState();
 }
 
-class _PublicChatPageState extends State<PublicChatPage> {
+class _PrivateChatPageState extends State<PrivateChatPage> {
   List<types.Message> _messages = [];
-
   String? id;
-
+  String? accessToken;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    connectToWebSocket(widget.chatId);
-    GetChat().getMessages(widget.chatId, widget.group.type).then((value) {
+    connectToWebSocket(widget.group.id);
+    GetChat().getMessages(widget.group.id, widget.group.type).then((value) {
       setState(() {
         _messages = value;
       });
@@ -53,6 +52,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
       int _id = jwtToken['user_id'];
       setState(() {
         id = _id.toString();
+        accessToken = value;
       });
     });
   }
@@ -76,7 +76,7 @@ class _PublicChatPageState extends State<PublicChatPage> {
           });
           debugPrint('Connected to WebSocket');
           unsubscribe = stompClient!.subscribe(
-            destination: '/topic/public/$chatId',
+            destination: '/topic/private/$chatId',
             callback: (StompFrame frame) {
               final messages =
                   types.TextMessage.fromJson(jsonDecode(frame.body!));
@@ -97,6 +97,14 @@ class _PublicChatPageState extends State<PublicChatPage> {
     stompClient?.activate();
   }
 
+  void _sendMessage(types.PartialText message) {
+    stompClient?.send(
+      destination: '/chats/${widget.group.id}/user',
+      body: jsonEncode({"text": message.text}),
+      headers: {},
+    );
+  }
+
   void disconnectFromWebSocket() {
     debugPrint('disconnect');
 
@@ -105,59 +113,10 @@ class _PublicChatPageState extends State<PublicChatPage> {
     stompClient?.deactivate();
   }
 
-  // void subscribeToChatTopic() {
-  //   stompClient?.subscribe(
-  //     destination: '/topic/chats/${widget.chatId}',
-  //     callback: (StompFrame frame) {
-  //       final messages = types.TextMessage.fromJson(jsonDecode(frame.body!));
-  //       setState(() {
-  //         _messages.insert(0, messages);
-  //       });
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          actions: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 1 / 5,
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  icon: const Icon(Icons.more_outlined),
-                  onChanged: (value) {
-                    if (value == 'Выход из чата') {
-                      GetChat().deleteChat(widget.chatId);
-                    }
-                    if (value == 'Добавить участников') {
-                      _openAddGroupChatModal(context);
-                    }
-                  },
-                  items: [
-                    DropdownMenuItem<String>(
-                      value: 'Выход из чата',
-                      child: Text(
-                        'Выход из чата',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.background),
-                      ),
-                    ),
-                    DropdownMenuItem<String>(
-                      value: 'Добавить участников',
-                      child: Text(
-                        'Добавить участников',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.background),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
           backgroundColor: Theme.of(context).colorScheme.secondary,
           title: Text(widget.group.name),
         ),
@@ -170,7 +129,6 @@ class _PublicChatPageState extends State<PublicChatPage> {
                 child: Chat(
                   l10n: const ChatL10nRu(),
                   showUserAvatars: true,
-                  showUserNames: true,
                   messages: _messages,
                   dateLocale: 'ru_RU',
                   onSendPressed: _sendMessage,
@@ -182,21 +140,13 @@ class _PublicChatPageState extends State<PublicChatPage> {
               ));
   }
 
-  void _sendMessage(types.PartialText message) {
-    stompClient?.send(
-      destination: '/chats/${widget.chatId}/chat',
-      body: jsonEncode({"text": message.text}),
-      headers: {},
-    );
-  }
-
   void _openAddGroupChatModal(BuildContext context) {
     showModalBottomSheet(
       useSafeArea: true,
       context: context,
       isScrollControlled: true,
       builder: (_) {
-        return AddUserChat(chatId: widget.chatId);
+        return AddUserChat(chatId: widget.group.id);
       },
     );
   }

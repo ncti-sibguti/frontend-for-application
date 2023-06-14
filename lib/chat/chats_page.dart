@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:ncti/chat/chat_repository.dart';
+import 'package:ncti/maps/model/student.dart';
 import 'Window/create_group_chat.dart';
 import '/repository/ncti_repository.dart';
 
@@ -84,36 +85,43 @@ class _ChatPageState extends State<ChatPage> {
         child: ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
-          itemCount: chats.length + 1,
+          itemCount: chats.length,
           itemBuilder: (context, index) {
-            if (index == chats.length) {
-              return _buildLoaderIndicator(); // Placeholder for loader indicator at the end of the list
-            } else {
-              return ListTile(
-                leading: Icon(
-                  Icons.groups_2_outlined,
-                  size: 40,
+            return ListTile(
+              minVerticalPadding: 20,
+              leading: Icon(
+                chats[index].type == "PUBLIC"
+                    ? Icons.groups_2_outlined
+                    : Icons.person_2_outlined,
+                size: 40,
+                color: Theme.of(context).colorScheme.background,
+              ),
+              title: Text(
+                chats[index].name,
+                style: TextStyle(
                   color: Theme.of(context).colorScheme.background,
                 ),
-                title: Text(
-                  chats[index].name,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-                subtitle: Text('Участников: ${chats[index].userCount}'),
-                onTap: () {
+              ),
+              subtitle: chats[index].type == "PUBLIC"
+                  ? Text('Групповой чат')
+                  : Text('Личный чат'),
+              onTap: () {
+                if (chats[index].type == "PUBLIC") {
                   AutoRouter.of(context).push(
                     PublicChatRoute(
                       chatId: chats[index].id,
                       group: chats[index],
-                      accessToken: accessToken!,
-                      id: id!,
                     ),
                   );
-                },
-              );
-            }
+                }
+                if (chats[index].type == "PRIVATE") {
+                  AutoRouter.of(context).push(PrivateChatRoute(
+                    chatId: chats[index].id,
+                    group: chats[index],
+                  ));
+                }
+              },
+            );
           },
         ),
       ),
@@ -121,7 +129,11 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildLoaderIndicator() {
-    return _isFetchingChats ? Container() : Container();
+    return _isFetchingChats
+        ? CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          )
+        : Container();
   }
 
   void _openCreateGroupChatModal(BuildContext context) {
