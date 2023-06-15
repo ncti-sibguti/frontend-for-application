@@ -20,9 +20,7 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      selectedDay = daysOfWeek[weekdayInt];
-    });
+
     getSched();
   }
 
@@ -35,8 +33,12 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
         .getScheduleGroup(widget.group.id.toString())
         .then((data) {
       setState(() {
-        isLoading = false;
         dataJson = data;
+      });
+      scanDay();
+      setState(() {
+        selectedDay = daysOfWeek[weekdayInt];
+        isLoading = false;
       });
     });
   }
@@ -46,15 +48,8 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
   }
 
 //TODO Экран по камерой
-  static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
-  static List<String> weekdays = [
-    "Понедельник",
-    "Вторник",
-    "Среда",
-    "Четверг",
-    "Пятница",
-    "Суббота"
-  ];
+  static List<String> daysOfWeek = [];
+  static List<String> weekdays = [];
 
   static int weekdayInt = (DateTime.now().weekday - 1);
   String? selectedDay;
@@ -74,8 +69,36 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
     });
   }
 
+  void scanDay() {
+    if (dataJson.containsKey('Понедельник') &&
+        !weekdays.contains('Понедельник')) {
+      weekdays.add('Понедельник');
+      daysOfWeek.add('ПН');
+    }
+    if (dataJson.containsKey('Вторник') && !weekdays.contains('Вторник')) {
+      weekdays.add('Вторник');
+      daysOfWeek.add('ВТ');
+    }
+    if (dataJson.containsKey('Среда') && !weekdays.contains('Среда')) {
+      weekdays.add('Среда');
+      daysOfWeek.add('СР');
+    }
+    if (dataJson.containsKey('Четверг') && !weekdays.contains('Четверг')) {
+      weekdays.add('Четверг');
+      daysOfWeek.add('ЧТ');
+    }
+    if (dataJson.containsKey('Пятница') && !weekdays.contains('Пятница')) {
+      weekdays.add('Пятница');
+      daysOfWeek.add('ПТ');
+    }
+    if (dataJson.containsKey('Суббота') && !weekdays.contains('Суббота')) {
+      weekdays.add('Суббота');
+      daysOfWeek.add('СБ');
+    }
+    debugPrint(weekdays.toString());
+  }
+
   List<dynamic> getLessonsForDay(int day) {
-    debugPrint(dataJson.toString());
     String dayOfWeek = weekdays[day];
     if (dataJson.containsKey(dayOfWeek)) {
       return dataJson[dayOfWeek];
@@ -146,12 +169,15 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
                       DateTime day = getDateTimeForDayOfWeek(pageIndex + 1);
                       List<dynamic> lessons = getLessonsForDay(pageIndex);
                       String formattedDate =
-                          DateFormat.yMMMMEEEEd().format(day);
+                          DateFormat.yMMMMEEEEd('ru_RU').format(day);
 
                       if (lessons.isNotEmpty) {
                         return Column(
                           children: [
                             Text(formattedDate),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             Expanded(
                               child: ListView.builder(
                                 itemCount: lessons.length,

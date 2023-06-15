@@ -110,7 +110,7 @@ class _AddUserChatState extends State<AddUserChat> {
                       // you'd often call a server or save the information in a database.
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text('Добавляем пользоватея в чатик')),
+                            content: Text('Добавляем пользователя в чатик')),
                       );
                       Navigator.pop(context);
                     }

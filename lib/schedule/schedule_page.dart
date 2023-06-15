@@ -21,9 +21,7 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      selectedDay = daysOfWeek[weekdayInt];
-    });
+
     getSched();
   }
 
@@ -50,18 +48,26 @@ class _SchedulePageState extends State<SchedulePage> {
           GetScheduleRepositories().getStudentSchedule().then((data) {
             if (!mounted) return;
             setState(() {
-              isLoading = false;
               dataJson = data;
               isTeacher = false;
+            });
+            scanDay();
+            setState(() {
+              selectedDay = daysOfWeek[weekdayInt];
+              isLoading = false;
             });
           });
         } else if (authorities.contains('ROLE_TEACHER')) {
           GetScheduleRepositories().getTeacherSchedule().then((data) {
             if (!mounted) return;
             setState(() {
-              isLoading = false;
               dataJson = data;
               isTeacher = true;
+            });
+            scanDay();
+            setState(() {
+              selectedDay = daysOfWeek[weekdayInt];
+              isLoading = false;
             });
           });
         }
@@ -73,15 +79,8 @@ class _SchedulePageState extends State<SchedulePage> {
     getSched();
   }
 
-  static List<String> daysOfWeek = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
-  static List<String> weekdays = [
-    "Понедельник",
-    "Вторник",
-    "Среда",
-    "Четверг",
-    "Пятница",
-    "Суббота"
-  ];
+  static List<String> daysOfWeek = [];
+  static List<String> weekdays = [];
 
   static int weekdayInt =
       DateTime.now().weekday == 7 ? 1 : DateTime.now().weekday - 1;
@@ -101,6 +100,35 @@ class _SchedulePageState extends State<SchedulePage> {
     setState(() {
       selectedDay = day;
     });
+  }
+
+  void scanDay() {
+    if (dataJson.containsKey('Понедельник') &&
+        !weekdays.contains('Понедельник')) {
+      weekdays.add('Понедельник');
+      daysOfWeek.add('ПН');
+    }
+    if (dataJson.containsKey('Вторник') && !weekdays.contains('Вторник')) {
+      weekdays.add('Вторник');
+      daysOfWeek.add('ВТ');
+    }
+    if (dataJson.containsKey('Среда') && !weekdays.contains('Среда')) {
+      weekdays.add('Среда');
+      daysOfWeek.add('СР');
+    }
+    if (dataJson.containsKey('Четверг') && !weekdays.contains('Четверг')) {
+      weekdays.add('Четверг');
+      daysOfWeek.add('ЧТ');
+    }
+    if (dataJson.containsKey('Пятница') && !weekdays.contains('Пятница')) {
+      weekdays.add('Пятница');
+      daysOfWeek.add('ПТ');
+    }
+    if (dataJson.containsKey('Суббота') && !weekdays.contains('Суббота')) {
+      weekdays.add('Суббота');
+      daysOfWeek.add('СБ');
+    }
+    debugPrint(weekdays.toString());
   }
 
   List<dynamic> getLessonsForDay(int day) {

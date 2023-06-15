@@ -122,12 +122,15 @@ class _PublicChatPageState extends State<PublicChatPage> {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 1 / 5,
+            Container(
+              width: MediaQuery.of(context).size.width /
+                  4, // Установите ширину в 1/4 экрана
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  icon: const Icon(Icons.more_outlined),
+                  padding: EdgeInsets.only(right: 15),
+                  icon: Icon(Icons.more_horiz_outlined, color: Colors.white),
+                  isExpanded:
+                      true, // Занимает все доступное горизонтальное пространство
                   onChanged: (value) {
                     if (value == 'Выход из чата') {
                       GetChat().deleteChat(widget.chatId);

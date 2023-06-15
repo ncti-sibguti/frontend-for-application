@@ -53,7 +53,7 @@ class _PermissionsModalState extends State<PermissionsModal> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Закрыть'),
+              child: Text('Закрыть', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

@@ -75,9 +75,11 @@ class _UserListPageState extends State<UserListPage> {
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
                 onChanged: filterUsers,
                 decoration: InputDecoration(
-                  labelText: 'Поиск',
-                  prefixIcon: Icon(Icons.search),
-                ),
+                    labelStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.background),
+                    labelText: 'Поиск',
+                    prefixIcon: Icon(Icons.search),
+                    prefixIconColor: Theme.of(context).colorScheme.background),
               ),
             ),
             Expanded(

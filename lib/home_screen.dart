@@ -77,6 +77,8 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         bottomNavigationBuilder: (_, tabsRouter) => SalomonBottomBar(
+            selectedItemColor: Theme.of(context).colorScheme.background,
+            unselectedItemColor: Theme.of(context).colorScheme.background,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             margin: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -92,8 +94,8 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(Icons.message_outlined),
                   title: const Text('Чат')),
               SalomonBottomBarItem(
-                  icon: const Icon(Icons.cabin_outlined),
-                  title: const Text('Личный кабинет'))
+                  icon: const Icon(Icons.person_3_outlined),
+                  title: const Text('Профиль'))
             ]),
       );
     }

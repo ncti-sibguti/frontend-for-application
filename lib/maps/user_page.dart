@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:ncti/drawer/permisions_modal.dart';
-import 'package:ncti/theme_changer.dart';
-import 'package:provider/provider.dart';
+
 import 'package:uuid/uuid.dart';
 
 import 'package:flutter/material.dart';
@@ -65,13 +64,11 @@ class _UserPageState extends State<UserPage> {
     'Пользователи',
     'Включить уведомления',
     'Сменить пароль',
-    'Сменить тему',
     'Выйти'
   ];
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeModel>(context);
     return Scaffold(
       body: isLoading
           ? Center(
@@ -102,7 +99,7 @@ class _UserPageState extends State<UserPage> {
                                   fontSize: 24.0,
                                   fontWeight: FontWeight.bold,
                                   color:
-                                      Theme.of(context).colorScheme.secondary),
+                                      Theme.of(context).colorScheme.background),
                             ),
                             const SizedBox(height: 8.0),
                             Text(
@@ -111,7 +108,7 @@ class _UserPageState extends State<UserPage> {
                                   fontSize: 24.0,
                                   fontWeight: FontWeight.bold,
                                   color:
-                                      Theme.of(context).colorScheme.secondary),
+                                      Theme.of(context).colorScheme.background),
                             ),
                             const SizedBox(height: 8.0),
                             ListView.builder(
@@ -125,7 +122,7 @@ class _UserPageState extends State<UserPage> {
                                       style: TextStyle(
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .secondary),
+                                              .background),
                                     ),
                                   );
                                 }),
@@ -176,10 +173,8 @@ class _UserPageState extends State<UserPage> {
                                         AutoRouter.of(context)
                                             .push(ChangePasswordRoute());
                                         break;
+
                                       case 5:
-                                        themeProvider.toggleTheme();
-                                        break;
-                                      case 6:
                                         NotificationRep().deleteToken();
                                         GetToken().removeToken();
 
