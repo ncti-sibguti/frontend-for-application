@@ -27,6 +27,8 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
   dynamic dataJson = '';
   bool isLoading = true;
   List<String> role = [];
+  static List<String> _daysOfWeek = [];
+  static List<String> _weekdays = [];
 
   void getSched() async {
     GetScheduleRepositories()
@@ -35,9 +37,10 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
       setState(() {
         dataJson = data;
       });
+
       scanDay();
       setState(() {
-        selectedDay = daysOfWeek[weekdayInt];
+        selectedDay = _daysOfWeek[weekdayInt];
         isLoading = false;
       });
     });
@@ -48,10 +51,8 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
   }
 
 //TODO Экран по камерой
-  static List<String> daysOfWeek = [];
-  static List<String> weekdays = [];
 
-  static int weekdayInt = (DateTime.now().weekday - 1);
+  static int weekdayInt = 0;
   String? selectedDay;
   final PageController _pageController =
       PageController(initialPage: weekdayInt);
@@ -71,35 +72,35 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
 
   void scanDay() {
     if (dataJson.containsKey('Понедельник') &&
-        !weekdays.contains('Понедельник')) {
-      weekdays.add('Понедельник');
-      daysOfWeek.add('ПН');
+        !_weekdays.contains('Понедельник')) {
+      _weekdays.add('Понедельник');
+      _daysOfWeek.add('ПН');
     }
-    if (dataJson.containsKey('Вторник') && !weekdays.contains('Вторник')) {
-      weekdays.add('Вторник');
-      daysOfWeek.add('ВТ');
+    if (dataJson.containsKey('Вторник') && !_weekdays.contains('Вторник')) {
+      _weekdays.add('Вторник');
+      _daysOfWeek.add('ВТ');
     }
-    if (dataJson.containsKey('Среда') && !weekdays.contains('Среда')) {
-      weekdays.add('Среда');
-      daysOfWeek.add('СР');
+    if (dataJson.containsKey('Среда') && !_weekdays.contains('Среда')) {
+      _weekdays.add('Среда');
+      _daysOfWeek.add('СР');
     }
-    if (dataJson.containsKey('Четверг') && !weekdays.contains('Четверг')) {
-      weekdays.add('Четверг');
-      daysOfWeek.add('ЧТ');
+    if (dataJson.containsKey('Четверг') && !_weekdays.contains('Четверг')) {
+      _weekdays.add('Четверг');
+      _daysOfWeek.add('ЧТ');
     }
-    if (dataJson.containsKey('Пятница') && !weekdays.contains('Пятница')) {
-      weekdays.add('Пятница');
-      daysOfWeek.add('ПТ');
+    if (dataJson.containsKey('Пятница') && !_weekdays.contains('Пятница')) {
+      _weekdays.add('Пятница');
+      _daysOfWeek.add('ПТ');
     }
-    if (dataJson.containsKey('Суббота') && !weekdays.contains('Суббота')) {
-      weekdays.add('Суббота');
-      daysOfWeek.add('СБ');
+    if (dataJson.containsKey('Суббота') && !_weekdays.contains('Суббота')) {
+      _weekdays.add('Суббота');
+      _daysOfWeek.add('СБ');
     }
-    debugPrint(weekdays.toString());
+    debugPrint(_weekdays.toString());
   }
 
   List<dynamic> getLessonsForDay(int day) {
-    String dayOfWeek = weekdays[day];
+    String dayOfWeek = _weekdays[day];
     if (dataJson.containsKey(dayOfWeek)) {
       return dataJson[dayOfWeek];
     } else {
@@ -112,19 +113,19 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
       height: 40,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: daysOfWeek.length,
+        itemCount: _daysOfWeek.length,
         itemBuilder: (context, int pageIndex) {
           return SizedBox(
-            width: MediaQuery.of(context).size.width * 1 / daysOfWeek.length,
+            width: MediaQuery.of(context).size.width * 1 / _daysOfWeek.length,
             child: TextButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateColor.resolveWith((states) {
-                  return selectedDay == daysOfWeek[pageIndex]
+                  return selectedDay == _daysOfWeek[pageIndex]
                       ? Theme.of(context).colorScheme.secondary
                       : Theme.of(context).colorScheme.primary;
                 }),
                 foregroundColor: MaterialStateColor.resolveWith((states) {
-                  return selectedDay == daysOfWeek[pageIndex]
+                  return selectedDay == _daysOfWeek[pageIndex]
                       ? Theme.of(context).colorScheme.primary
                       : Theme.of(context).colorScheme.secondary;
                 }),
@@ -134,7 +135,7 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
                   _pageController.jumpToPage(pageIndex);
                 });
               },
-              child: Text(daysOfWeek[pageIndex]),
+              child: Text(_daysOfWeek[pageIndex]),
             ),
           );
         },
@@ -163,7 +164,7 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
                 Expanded(
                   child: PageView.builder(
                     onPageChanged: (int pageIndex) =>
-                        onDaySelected(daysOfWeek[pageIndex]),
+                        onDaySelected(_daysOfWeek[pageIndex]),
                     controller: _pageController,
                     itemBuilder: (context, pageIndex) {
                       DateTime day = getDateTimeForDayOfWeek(pageIndex + 1);
@@ -205,7 +206,7 @@ class _GroupLessonsPageState extends State<GroupLessonsPage> {
                         );
                       }
                     },
-                    itemCount: daysOfWeek.length,
+                    itemCount: _daysOfWeek.length,
                   ),
                 ),
               ],
